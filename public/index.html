@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="fa-IR" style="background-color: var(--background-color); min-height: 100%">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/logo192.png"/>
+    <link rel="preconnect" href="PRECONNECT"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <meta name="theme-color" content="BACKGROUND_COLOR"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="BACKGROUND_COLOR"/>
+    <meta name="keywords" content="KEYWORDS"/>
+    <title>NAME</title>
+    <meta property="og:title" content="NAME"/>
+    <meta name="twitter:title" content="NAME"/>
+    <meta name="description" content="DESCRIPTION"/>
+    <meta property="og:description" content="DESCRIPTION"/>
+    <meta name="twitter:description" content="DESCRIPTION"/>
+    <meta property="og:image" content="%PUBLIC_URL%/logo512.png"/>
+    <meta name="twitter:image" content="%PUBLIC_URL%/logo512.png"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <style>
+        :root {
+            --first-color: FIRST_COLOR;
+            --second-color: SECOND_COLOR;
+            --third-color: THIRD_COLOR;
+            --forth-color: FORTH_COLOR;
+
+            --background-color: BACKGROUND_COLOR;
+            --second-background-color: SECOND_BACKGROUND_COLOR;
+            --third-background-color: THIRD_BACKGROUND_COLOR;
+
+            --solid-light: SOLID_LIGHT;
+            --solid-dark: SOLID_DARK;
+
+            --text-color: TEXT_COLOR;
+            --border-color: BORDER_COLOR;
+            --second-border-color: SECOND_BORDER_COLOR;
+            --material-color: MATERIAL_COLOR;
+
+            --very-small-font: VERY_SMALL_FONT;
+            --small-font: SMALL_FONT;
+            --regular-font: REGULAR_FONT;
+            --title-font: TITLE_FONT;
+            --big-font: BIG_FONT;
+            --very-big-font: VERY_BIG_FONT;
+        }
+    </style>
+</head>
+<body style="background-color: var(--background-color); min-height: 100%">
+<noscript>برای نمایش سایت، جاوااسکریپت را فعال کنید.</noscript>
+<div id="root">
+    <style>
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -35px;
+            }
+            100% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -124px;
+            }
+        }
+
+        @keyframes color {
+            100%, 0% {
+                stroke: var(--first-color);
+            }
+            40% {
+                stroke: var(--second-color);
+            }
+            66% {
+                stroke: var(--third-color);
+            }
+            80%, 90% {
+                stroke: var(--forth-color);
+            }
+        }
+    </style>
+    <div style="height:90vh; display: flex; align-items: center;  justify-content: center;">
+        <svg style="animation: rotate 2s linear infinite; transform-origin: center center;" width="80px" height="80px" viewBox="25 25 50 50">
+            <circle style="stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 1.5s ease-in-out infinite,color 6s ease-in-out infinite; stroke-linecap: round;" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/>
+        </svg>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+.material {
+    overflow: hidden;
+    transform: perspective(0);
+    position: relative;
+    user-select: none;
+    vertical-align: top;
+}
+
+.material:focus {
+    outline: none;
+}
+
+.ripple {
+    position: absolute;
+    background: var(--material-color);
+    border-radius: 100%;
+    transform: scale(0);
+    opacity: 0;
+    pointer-events: none;
+    will-change: transform;
+    animation: ripple 0.6s ease;
+}
+
+@keyframes ripple {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+.rippleSlow {
+    position: absolute;
+    background: var(--material-color);
+    border-radius: 100%;
+    transform: scale(2);
+    pointer-events: none;
+    animation: rippleSlow 1s ease;
+    transition: all ease 0.4s;
+    will-change: transform;
+}
+
+@keyframes rippleSlow {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1.7);
+    }
+}

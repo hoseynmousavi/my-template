@@ -1,1 +1,1 @@
-# my-template
+So it's a new good project
