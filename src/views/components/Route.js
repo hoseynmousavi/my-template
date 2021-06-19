@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react"
+import React, {memo, useEffect, useState} from "react"
 
 function Route(props)
 {
@@ -30,4 +30,4 @@ function Route(props)
     else return null
 }
 
-export default Route
+export default memo(Route)

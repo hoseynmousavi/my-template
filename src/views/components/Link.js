@@ -1,10 +1,7 @@
-import React from "react"
-import * as PropTypes from "prop-types"
+import {memo} from "react"
 
-function Link(props)
+function Link({children, to, className, onClick, replace, style})
 {
-    const {children, to, className, onClick, replace} = props
-
     const go = e =>
     {
         e.preventDefault()
@@ -12,14 +9,7 @@ function Link(props)
         onClick && onClick(e)
     }
 
-    return <a href={to} onClick={go} className={className}>{children}</a>
+    return <a href={to} style={style} onClick={go} className={className}>{children}</a>
 }
 
-Link.propTypes = {
-    to: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    onClick: PropTypes.func,
-    replace: PropTypes.bool,
-}
-
-export default Link
+export default memo(Link)

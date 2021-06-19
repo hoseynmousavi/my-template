@@ -4,8 +4,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10;
-  background-color: var(--background-color);
+  z-index: var(--modal-z-index);
+  background-color: var(--first-background-color);
   animation: fade-in-back ease 0.2s;
 
   &.hide {

@@ -1,257 +1,126 @@
-import React, {PureComponent} from "react"
-import PropTypes from "prop-types"
+import {useRef, memo} from "react"
 
-class Material extends PureComponent
+function Material({children, backgroundColor, id, className, style, onClick})
 {
-    onContext = () => document.body.clientWidth <= 480 && this.onTouchMove()
+    const container = useRef(null)
+    let buttonPressTimer, pageX, pageY, ripple
 
-    handleButtonRelease = e =>
+    function appendRipple({x, y}, isSlow)
+    {
+        if (container?.current && x && y)
+        {
+            let target = container.current
+            let rect = target.getBoundingClientRect()
+            let tempRipple = document.createElement("span")
+            tempRipple.className = isSlow ? "ripple-slow" : "ripple"
+            if (backgroundColor) tempRipple.style.backgroundColor = backgroundColor
+            tempRipple.style.height = tempRipple.style.width = 1.3 * Math.max(rect.width, rect.height) + "px"
+            target.appendChild(tempRipple)
+            tempRipple.style.top = y - rect.top - tempRipple.offsetHeight / 2 + "px"
+            tempRipple.style.left = x - rect.left - tempRipple.offsetWidth / 2 + "px"
+            if (isSlow) ripple = tempRipple
+            pageX = null
+            pageY = null
+
+            if (!isSlow) setTimeout(() => target && target.removeChild(tempRipple), 600)
+        }
+    }
+
+    function removeRipple(isLeave)
+    {
+        if (ripple)
+        {
+            ripple.style.opacity = "0"
+            if (isLeave) ripple.style.transform = "scale(0)"
+            setTimeout(() =>
+            {
+                if (container?.current && ripple)
+                {
+                    container.current.removeChild(ripple)
+                    ripple = null
+                }
+            }, 500)
+        }
+    }
+
+    function onContext()
+    {
+        document.body.clientWidth <= 480 && onTouchMove()
+    }
+
+    function handleButtonRelease(e)
     {
         if (document.body.clientWidth > 480)
         {
-            clearTimeout(this.buttonPressTimer)
-            if (!this.ripple)
-            {
-                if (this.container)
-                {
-                    let target = this.container
-                    let rect = target.getBoundingClientRect()
-                    let ripple = document.createElement("span")
-                    ripple.className = "ripple"
-                    if (this.props.backgroundColor) ripple.style.backgroundColor = this.props.backgroundColor
-                    ripple.style.height = ripple.style.width = Math.max(rect.width, rect.height) + "px"
-                    target.appendChild(ripple)
-                    let top = e.clientY - rect.top - ripple.offsetHeight / 2
-                    let left = e.clientX - rect.left - ripple.offsetWidth / 2
-                    ripple.style.top = top + "px"
-                    ripple.style.left = left + "px"
-                    setTimeout(() =>
-                    {
-                        try
-                        {
-                            target.removeChild(ripple)
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }, 600)
-                }
-            }
-            else
-            {
-                this.ripple.style.opacity = "0"
-                setTimeout(() =>
-                {
-                    if (this.ripple && this.container)
-                    {
-                        try
-                        {
-                            this.container.removeChild(this.ripple)
-                            this.ripple = null
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }
-                }, 500)
-            }
+            clearTimeout(buttonPressTimer)
+            if (!ripple) appendRipple({x: e.clientX, y: e.clientY}, false)
+            else removeRipple(false)
         }
     }
 
-    onMouseDown = e =>
+    function onMouseDown(e)
+    {
+        if (document.body.clientWidth > 480) buttonPressTimer = setTimeout(() => appendRipple({x: e.clientX, y: e.clientY}, true), 300)
+    }
+
+    function handleLeave()
     {
         if (document.body.clientWidth > 480)
         {
-            this.buttonPressTimer = setTimeout(() =>
-            {
-                if (this.container)
-                {
-                    let target = this.container
-                    let rect = target.getBoundingClientRect()
-                    let ripple = document.createElement("span")
-                    ripple.className = "rippleSlow"
-                    if (this.props.backgroundColor) ripple.style.backgroundColor = this.props.backgroundColor
-                    ripple.style.height = ripple.style.width = 1.3 * Math.max(rect.width, rect.height) + "px"
-                    target.appendChild(ripple)
-                    this.ripple = ripple
-                    let top = e.clientY - rect.top - ripple.offsetHeight / 2
-                    let left = e.clientX - rect.left - ripple.offsetWidth / 2
-                    ripple.style.top = top + "px"
-                    ripple.style.left = left + "px"
-                }
-            }, 300)
+            clearTimeout(buttonPressTimer)
+            removeRipple(true)
         }
     }
 
-    handleLeave = () =>
-    {
-        if (document.body.clientWidth > 480)
-        {
-            clearTimeout(this.buttonPressTimer)
-            if (this.ripple)
-            {
-                this.ripple.style.opacity = "0"
-                this.ripple.style.transform = "scale(0)"
-                setTimeout(() =>
-                {
-                    if (this.ripple && this.container)
-                    {
-                        try
-                        {
-                            this.container.removeChild(this.ripple)
-                            this.ripple = null
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }
-                }, 500)
-            }
-        }
-    }
-
-    onTouchStart = e =>
+    function onTouchStart(e)
     {
         if (document.body.clientWidth <= 480)
         {
-            this.pageX = e.touches[0].clientX
-            this.pageY = e.touches[0].clientY
-            this.buttonPressTimer = setTimeout(() =>
-            {
-                if (this.container)
-                {
-                    let target = this.container
-                    let rect = target.getBoundingClientRect()
-                    let ripple = document.createElement("span")
-                    ripple.className = "rippleSlow"
-                    if (this.props.backgroundColor) ripple.style.backgroundColor = this.props.backgroundColor
-                    ripple.style.height = ripple.style.width = 1.3 * Math.max(rect.width, rect.height) + "px"
-                    target.appendChild(ripple)
-                    this.ripple = ripple
-                    let top = this.pageY - rect.top - ripple.offsetHeight / 2
-                    let left = this.pageX - rect.left - ripple.offsetWidth / 2
-                    ripple.style.top = top + "px"
-                    ripple.style.left = left + "px"
-                }
-            }, 300)
+            pageX = e.touches[0].clientX
+            pageY = e.touches[0].clientY
+            buttonPressTimer = setTimeout(() => appendRipple({x: pageX, y: pageY}, true), 300)
         }
     }
 
-    onTouchMove = () =>
+    function onTouchMove()
     {
         if (document.body.clientWidth <= 480)
         {
-            clearTimeout(this.buttonPressTimer)
-            if (this.ripple)
-            {
-                this.ripple.style.opacity = "0"
-                this.ripple.style.transform = "scale(0)"
-                setTimeout(() =>
-                {
-                    if (this.ripple && this.container)
-                    {
-                        try
-                        {
-                            this.container.removeChild(this.ripple)
-                            this.ripple = null
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }
-                }, 500)
-            }
-            this.pageX = null
-            this.pageY = null
+            clearTimeout(buttonPressTimer)
+            removeRipple(true)
+            pageX = null
+            pageY = null
         }
     }
 
-    onTouchEnd = () =>
+    function onTouchEnd()
     {
         if (document.body.clientWidth <= 480)
         {
-            clearTimeout(this.buttonPressTimer)
-            if (!this.ripple)
-            {
-                if (this.container && this.pageX !== null)
-                {
-                    let target = this.container
-                    let rect = target.getBoundingClientRect()
-                    let ripple = document.createElement("span")
-                    ripple.className = "ripple"
-                    if (this.props.backgroundColor) ripple.style.backgroundColor = this.props.backgroundColor
-                    ripple.style.height = ripple.style.width = Math.max(rect.width, rect.height) + "px"
-                    target.appendChild(ripple)
-                    let top = this.pageY - rect.top - ripple.offsetHeight / 2
-                    let left = this.pageX - rect.left - ripple.offsetWidth / 2
-                    ripple.style.top = top + "px"
-                    ripple.style.left = left + "px"
-                    setTimeout(() =>
-                    {
-                        try
-                        {
-                            target.removeChild(ripple)
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }, 600)
-                }
-            }
-            else
-            {
-                this.ripple.style.opacity = "0"
-                setTimeout(() =>
-                {
-                    if (this.ripple && this.container)
-                    {
-                        try
-                        {
-                            this.container.removeChild(this.ripple)
-                            this.ripple = null
-                        }
-                        catch (e)
-                        {
-                            console.log("material failed")
-                        }
-                    }
-                }, 500)
-            }
+            clearTimeout(buttonPressTimer)
+            if (!ripple) appendRipple({x: pageX, y: pageY}, false)
+            else removeRipple(false)
         }
     }
 
-    render()
-    {
-        const {id, className, style, children, onClick} = this.props
-        return <div id={id}
-                    ref={e => this.container = e}
-                    onContextMenu={this.onContext}
-                    style={style ? style : {}}
-                    className={className ? "material " + className : "material"}
-                    onMouseDown={this.onMouseDown}
-                    onMouseUp={this.handleButtonRelease}
-                    onMouseLeave={this.handleLeave}
-                    onTouchStart={this.onTouchStart}
-                    onTouchMove={this.onTouchMove}
-                    onTouchEnd={this.onTouchEnd}
-                    onClick={onClick}>
+    return (
+        <div id={id}
+             ref={container}
+             onContextMenu={onContext}
+             style={style || {}}
+             className={`material ${className}`}
+             onMouseDown={onMouseDown}
+             onMouseUp={handleButtonRelease}
+             onMouseLeave={handleLeave}
+             onTouchStart={onTouchStart}
+             onTouchMove={onTouchMove}
+             onTouchEnd={onTouchEnd}
+             onClick={onClick}>
             {children}
         </div>
-    }
+    )
 }
 
-Material.propTypes = {
-    className: PropTypes.string,
-    onClick: PropTypes.func,
-    backgroundColor: PropTypes.string,
-    style: PropTypes.object,
-}
-
-export default Material
+export default memo(Material)
 
 // written by #Hoseyn
