@@ -17,8 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "production": "./pre-production.sh && react-scripts build && ./post-production.sh",
-    "update": "react-scripts build && ./update-production.sh"
+    "postbuild": ".\\set-variables.sh"
   },
   "eslintConfig": {
     "extends": [
