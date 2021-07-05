@@ -17,7 +17,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "postbuild": ".\\set-variables.sh"
+    "postbuild": ".\\set-variables.sh || ./set-variables.sh"
   },
   "eslintConfig": {
     "extends": [
