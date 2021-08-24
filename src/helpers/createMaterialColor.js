@@ -1,6 +1,6 @@
 import hexToRgba from "./hexToRgba"
 
-function createMaterialColor({variable, alpha})
+function createMaterialColor({variable, alpha = "0.3"})
 {
     return hexToRgba(getComputedStyle(document.documentElement).getPropertyValue(variable), alpha)
 }

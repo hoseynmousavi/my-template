@@ -1,6 +1,6 @@
 .circular {
   display: block;
-  margin: auto;
+  margin: 0 auto;
   animation: rotate 2s linear infinite;
   transform-origin: center center;
 }
@@ -41,9 +41,9 @@
     stroke: var(--second-color);
   }
   66% {
-    stroke: var(--third-color);
+    stroke: var(--first-color);
   }
   80%, 90% {
-    stroke: var(--forth-color);
+    stroke: var(--second-color);
   }
 }

@@ -7,8 +7,8 @@
     <link rel="apple-touch-icon" sizes="192x192" href="%PUBLIC_URL%/logo192.png"/>
     <link rel="preconnect" href="REST_URL"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-    <meta name="theme-color" content="FIRST_BACKGROUND_COLOR"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="FIRST_BACKGROUND_COLOR"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="keywords" content="KEYWORDS"/>
     <title>NAME</title>
     <meta property="og:title" content="NAME"/>
@@ -21,11 +21,16 @@
     <meta name="twitter:card" content="summary_large_image"/>
     <style>
         :root {
-            --header-height: HEADER_HEIGHT;
+            --desktop-viewport: DESKTOP_VIEWPORT;
 
-            --desktop-grid-padding: DESKTOP_GRID_PADDING;
-            --tablet-grid-padding: TABLET_GRID_PADDING;
-            --mobile-grid-padding: MOBILE_GRID_PADDING;
+            --header-height: HEADER_HEIGHT;
+            --nav-height: NAV_HEIGHT;
+            --btn-input-height: BTN_INPUT_HEIGHT;
+
+            --mobile-first-grid-padding: MOBILE_FIRST_GRID_PADDING;
+            --mobile-first-solid-padding: MOBILE_FIRST_SOLID_PADDING;
+            --mobile-second-grid-padding: MOBILE_SECOND_GRID_PADDING;
+            --mobile-second-solid-padding: MOBILE_SECOND_SOLID_PADDING;
 
             --first-line-height: FIRST_LINE_HEIGHT;
 
@@ -33,29 +38,53 @@
             --modal-z-index: MODAL_Z_INDEX;
             --default-z-index: DEFAULT_Z_INDEX;
 
+            --toast-success-bg: TOAST_SUCCESS_BG;
+            --toast-info-bg: TOAST_INFO_BG;
+            --toast-fail-bg: TOAST_FAIL_BG;
+            --toast-fail-text: TOAST_FAIL_TEXT;
+
             --first-color: FIRST_COLOR;
             --second-color: SECOND_COLOR;
-            --third-color: THIRD_COLOR;
-            --forth-color: FORTH_COLOR;
+
+            --first-sub-color: FIRST_SUB_COLOR;
+            --second-sub-color: SECOND_SUB_COLOR;
+            --third-sub-color: THIRD_SUB_COLOR;
+            --forth-sub-color: FORTH_SUB_COLOR;
+
+            --disable-bg-color: DISABLE_BG_COLOR;
+            --disable-text-color: DISABLE_TEXT_COLOR;
+            --link-color: LINK_COLOR;
 
             --first-background-color: FIRST_BACKGROUND_COLOR;
             --second-background-color: SECOND_BACKGROUND_COLOR;
-            --third-background-color: THIRD_BACKGROUND_COLOR;
+
+            --first-modal-background-color: FIRST_MODAL_BACKGROUND_COLOR;
+            --second-modal-background-color: SECOND_MODAL_BACKGROUND_COLOR;
+            --third-modal-background-color: THIRD_MODAL_BACKGROUND_COLOR;
 
             --solid-light: SOLID_LIGHT;
             --solid-dark: SOLID_DARK;
 
             --first-text-color: FIRST_TEXT_COLOR;
+            --second-text-color: SECOND_TEXT_COLOR;
+            --third-text-color: THIRD_TEXT_COLOR;
 
             --first-border-color: FIRST_BORDER_COLOR;
-            --second-border-color: SECOND_BORDER_COLOR;
+
+            --first-shadow: FIRST_SHADOW;
+            --second-shadow: SECOND_SHADOW;
+
+            --first-radius: FIRST_RADIUS;
+            --second-radius: SECOND_RADIUS;
 
             --material-color: MATERIAL_COLOR;
 
+            --damn-font: DAMN_FONT;
             --tiny-font: TINY_FONT;
             --small-font: SMALL_FONT;
             --regular-font: REGULAR_FONT;
             --title-font: TITLE_FONT;
+            --large-font: LARGE_FONT;
             --big-font: BIG_FONT;
             --huge-font: HUGE_FONT;
         }
@@ -63,48 +92,50 @@
 </head>
 <body style="background-color: var(--first-background-color); min-height: 100%">
 <noscript>برای نمایش سایت، جاوااسکریپت را فعال کنید.</noscript>
-<div id="root">
-    <style>
-        @keyframes rotate {
-            100% {
-                transform: rotate(360deg);
+<div id="outer-root">
+    <div id="root">
+        <style>
+            @keyframes rotate {
+                100% {
+                    transform: rotate(360deg);
+                }
             }
-        }
 
-        @keyframes dash {
-            0% {
-                stroke-dasharray: 1, 200;
-                stroke-dashoffset: 0;
+            @keyframes dash {
+                0% {
+                    stroke-dasharray: 1, 200;
+                    stroke-dashoffset: 0;
+                }
+                50% {
+                    stroke-dasharray: 89, 200;
+                    stroke-dashoffset: -35px;
+                }
+                100% {
+                    stroke-dasharray: 89, 200;
+                    stroke-dashoffset: -124px;
+                }
             }
-            50% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -35px;
-            }
-            100% {
-                stroke-dasharray: 89, 200;
-                stroke-dashoffset: -124px;
-            }
-        }
 
-        @keyframes color {
-            100%, 0% {
-                stroke: var(--first-color);
+            @keyframes color {
+                100%, 0% {
+                    stroke: var(--first-color);
+                }
+                40% {
+                    stroke: var(--second-color);
+                }
+                66% {
+                    stroke: var(--first-color);
+                }
+                80%, 90% {
+                    stroke: var(--second-color);
+                }
             }
-            40% {
-                stroke: var(--second-color);
-            }
-            66% {
-                stroke: var(--third-color);
-            }
-            80%, 90% {
-                stroke: var(--forth-color);
-            }
-        }
-    </style>
-    <div style="height:90vh; display: flex; align-items: center;  justify-content: center;">
-        <svg style="animation: rotate 2s linear infinite; transform-origin: center center;" width="80px" height="80px" viewBox="25 25 50 50">
-            <circle style="stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 1.5s ease-in-out infinite,color 6s ease-in-out infinite; stroke-linecap: round;" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/>
-        </svg>
+        </style>
+        <div style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+            <svg style="animation: rotate 2s linear infinite; transform-origin: center center;" width="80px" height="80px" viewBox="25 25 50 50">
+                <circle style="stroke-dasharray: 1, 200; stroke-dashoffset: 0; animation: dash 1.5s ease-in-out infinite,color 6s ease-in-out infinite; stroke-linecap: round;" cx="50" cy="50" r="20" fill="none" stroke-width="4" stroke-miterlimit="10"/>
+            </svg>
+        </div>
     </div>
 </div>
 </body>

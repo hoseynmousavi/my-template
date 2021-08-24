@@ -1,8 +1,7 @@
 import React, {memo, useEffect, useState} from "react"
 
-function Route(props)
+function Route({location, path, render})
 {
-    const {location, path, render} = props
     const [params, setParams] = useState(null)
 
     useEffect(() =>

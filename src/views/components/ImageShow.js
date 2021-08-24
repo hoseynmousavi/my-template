@@ -1,145 +1,123 @@
-import React, {PureComponent} from "react"
 import {Helmet} from "react-helmet"
+import {useRef, useState, memo} from "react"
+import popOnPopState from "../../helpers/popOnPopState"
+import goBack from "../../helpers/goBack"
+import onResize from "../../helpers/onResize"
+import ImageLoading from "./ImageLoading"
 
-class ImageShow extends PureComponent
+function ImageShow({className, src, alt = "", loading = "lazy", draggable = "false", style, zoomable, onClick})
 {
-    onPopState = () =>
-    {
-        if (this.state?.showPicture)
-        {
-            this.closeImage()
-            window.removeEventListener("popstate", this.onPopState)
-            document.removeEventListener("keydown", this.onKeyDown)
-        }
-    }
+    const [showPicture, setShowPicture] = useState(false)
+    const imgRef = useRef(null)
+    const removeResize = useRef(null)
 
-    onKeyDown = e =>
+    function openImage(e)
     {
-        if (e.key === "Escape") window.history.back()
-    }
-
-    openImage = e =>
-    {
-        let backed = false
         e.stopPropagation()
-        this.setState({showPicture: true}, () =>
+        popOnPopState({key: "Escape", callback: closeImage})
+        setShowPicture(true)
+        const copyImage = imgRef.current.cloneNode(true)
+        removeResize.current = onResize({callback: () => setImgPosition(copyImage)})
+        const rect = imgRef.current.getBoundingClientRect()
+        copyImage.id = "picture"
+        copyImage.style.animation = "none"
+        copyImage.style.margin = "0"
+        copyImage.style.maxHeight = "initial"
+        copyImage.style.maxWidth = "initial"
+        copyImage.style.position = "fixed"
+        copyImage.style.zIndex = "var(--modal-z-index)"
+        copyImage.style.top = rect.top + "px"
+        copyImage.style.height = rect.height + "px"
+        copyImage.style.width = rect.width + "px"
+        copyImage.style.left = rect.left + "px"
+        copyImage.style.right = "auto"
+        copyImage.style.transition = "all ease 0.2s"
+        const backGround = document.createElement("div")
+        backGround.style.cursor = "pointer"
+        backGround.id = "backGround"
+        backGround.className = "back-cont"
+        let backed = false
+        copyImage.onclick = () =>
         {
-            document.body.style.overflowY = "hidden"
-            window.history.pushState("for-history", "", window.location.href)
-            window.addEventListener("popstate", this.onPopState, {passive: true})
-            document.addEventListener("keydown", this.onKeyDown, {passive: true})
-            const rect = this.img.getBoundingClientRect()
-            const copyImage = this.img.cloneNode(true)
-            copyImage.onclick = () =>
+            if (!backed && window.innerWidth > 480)
             {
-                if (!backed && document.body.clientWidth > 480)
-                {
-                    backed = true
-                    window.history.back()
-                }
+                backed = true
+                goBack()
             }
-            copyImage.id = "picture"
-            copyImage.style.margin = "0"
-            copyImage.style.maxHeight = "initial"
-            copyImage.style.maxWidth = "initial"
-            copyImage.style.position = "fixed"
-            copyImage.style.top = rect.top + "px"
-            copyImage.style.height = rect.height + "px"
-            copyImage.style.width = rect.width + "px"
-            copyImage.style.left = rect.left + "px"
-            copyImage.style.right = "auto"
-            copyImage.style.zIndex = "11"
-            const backGround = document.createElement("div")
-            backGround.id = "backGround"
-            backGround.className = "back-cont"
-            backGround.onclick = () =>
-            {
-                if (!backed)
-                {
-                    backed = true
-                    window.history.back()
-                }
-            }
-            document.body.append(backGround)
-            document.body.append(copyImage)
-            this.img.style.opacity = "0"
-            copyImage.style.transition = "all ease 0.2s"
-            setTimeout(() =>
-            {
-                if (this.img.naturalWidth / this.img.naturalHeight > window.innerWidth / window.innerHeight)
-                {
-                    copyImage.style.top = (window.innerHeight - (window.innerWidth / this.img.naturalWidth) * this.img.naturalHeight) / 2 + "px"
-                    copyImage.style.left = "0px"
-                    copyImage.style.width = window.innerWidth + "px"
-                    copyImage.style.height = (window.innerWidth / this.img.naturalWidth) * this.img.naturalHeight + "px"
-                }
-                else
-                {
-                    copyImage.style.top = "0px"
-                    copyImage.style.left = (window.innerWidth - (window.innerHeight / this.img.naturalHeight) * this.img.naturalWidth) / 2 + "px"
-                    copyImage.style.height = window.innerHeight + "px"
-                    copyImage.style.width = (window.innerHeight / this.img.naturalHeight) * this.img.naturalWidth + "px"
-                }
-                copyImage.style.borderRadius = "0"
-                copyImage.style.boxShadow = "none"
-
-                this.timer = setTimeout(() =>
-                {
-                    copyImage.style.top = "0px"
-                    copyImage.style.left = "0px"
-                    copyImage.style.objectFit = "contain"
-                    copyImage.style.height = "100%"
-                    copyImage.style.width = "100%"
-                }, 250)
-
-            }, 25)
-        })
-    }
-
-    closeImage = () =>
-    {
-        clearTimeout(this.timer)
-        this.setState({showPicture: false}, () =>
+        }
+        backGround.onclick = () =>
         {
-            document.body.style.overflowY = "auto"
-            const rect = this.img.getBoundingClientRect()
-            const copyImage = document.getElementById("picture")
-            const backGround = document.getElementById("backGround")
-            backGround.className = "back-cont hide"
-            copyImage.style.top = rect.top + "px"
-            copyImage.style.height = rect.height + "px"
-            copyImage.style.width = rect.width + "px"
-            copyImage.style.left = rect.left + "px"
-            copyImage.style.borderRadius = this.img.style.borderRadius
-            copyImage.style.boxShadow = this.img.style.boxShadow
-            copyImage.style.right = "auto"
-            setTimeout(() =>
+            if (!backed)
             {
-                this.img.style.opacity = "1"
-                copyImage.remove()
-                backGround.remove()
-            }, 200)
-        })
+                backed = true
+                goBack()
+            }
+        }
+        document.body.append(backGround)
+        document.body.append(copyImage)
+        imgRef.current.style.opacity = "0"
+        setImgPosition(copyImage)
     }
 
-    render()
+    function setImgPosition(copyImage)
     {
-        const {showPicture} = this.state || {}
-        const {className, src, alt, style} = this.props
-        return (
-            <React.Fragment>
-                <img loading="lazy" style={style} className={className} src={src} alt={alt} ref={e => this.img = e} onClick={this.openImage}/>
-                {
-                    showPicture &&
-                    <Helmet>
-                        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
-                    </Helmet>
-                }
-            </React.Fragment>
-        )
+        setTimeout(() =>
+        {
+            copyImage.style.borderRadius = "0"
+            copyImage.style.boxShadow = "none"
+            if (imgRef.current.naturalWidth / imgRef.current.naturalHeight > window.innerWidth / window.innerHeight)
+            {
+                copyImage.style.top = (window.innerHeight - (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight) / 2 + "px"
+                copyImage.style.left = "0px"
+                copyImage.style.width = window.innerWidth + "px"
+                copyImage.style.height = (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight + "px"
+            }
+            else
+            {
+                copyImage.style.top = "0px"
+                copyImage.style.left = (window.innerWidth - (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth) / 2 + "px"
+                copyImage.style.height = window.innerHeight + "px"
+                copyImage.style.width = (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth + "px"
+            }
+        }, 0)
     }
+
+    function closeImage()
+    {
+        removeResize.current && removeResize.current()
+        setShowPicture(false)
+        const rect = imgRef.current.getBoundingClientRect()
+        const copyImage = document.getElementById("picture")
+        const backGround = document.getElementById("backGround")
+        backGround.className = "back-cont hide"
+        copyImage.style.top = rect.top + "px"
+        copyImage.style.height = rect.height + "px"
+        copyImage.style.width = rect.width + "px"
+        copyImage.style.left = rect.left + "px"
+        copyImage.style.borderRadius = imgRef.current.style.borderRadius
+        copyImage.style.boxShadow = imgRef.current.style.boxShadow
+        copyImage.style.right = "auto"
+        setTimeout(() =>
+        {
+            imgRef.current.style.opacity = "1"
+            copyImage.remove()
+            backGround.remove()
+        }, 200)
+    }
+
+    return (
+        <>
+            <ImageLoading key={src} className={className} style={style} loading={loading} ref={imgRef} src={src} alt={alt} draggable={draggable} onClick={zoomable ? openImage : onClick ? onClick : undefined}/>
+            {
+                showPicture &&
+                <Helmet>
+                    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes"/>
+                </Helmet>
+            }
+        </>
+    )
 }
 
-export default ImageShow
+export default memo(ImageShow)
 
 // written by #Hoseyn

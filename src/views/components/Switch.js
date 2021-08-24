@@ -1,184 +1,156 @@
-import React, {PureComponent} from "react"
+import React, {useEffect, useRef, useState} from "react"
 
-class Switch extends PureComponent
+function Switch({children, className})
 {
-    componentDidMount()
+    const [state, setState] = useState({showChildIndex: null, location: null})
+    const {showChildIndex, location} = state
+    const currentLocation = useRef(null)
+    const currentIndex = useRef(null)
+    const contRef = useRef(null)
+    const innerContRef = useRef(null)
+
+    useEffect(() =>
     {
-        this.changeRoute()
+        const scrolls = []
 
-        window.addEventListener("popstate", this.setPopIndex, {passive: true})
-        window.addEventListener("pushState", this.setPushIndex, {passive: true})
-        window.addEventListener("replaceState", this.setReplaceIndex, {passive: true})
-    }
-
-    componentWillUnmount()
-    {
-        window.removeEventListener("popstate", this.setPopIndex)
-        window.removeEventListener("pushState", this.setPushIndex)
-        window.removeEventListener("replaceState", this.setReplaceIndex)
-    }
-
-    setPopIndex = () => this.changeRoute("pop")
-
-    setPushIndex = () => this.changeRoute("push")
-
-    setReplaceIndex = () => this.changeRoute("replace")
-
-    changeRoute = type =>
-    {
-        const scrolls = this.state?.scrolls || []
-        let scroll = 0
-        if (type === "pop")
+        function getScroll(type)
         {
-            if (scrolls.length > 0)
+            let scroll = 0
+            if (type === "popstate")
             {
-                scroll = scrolls[scrolls.length - 1]
-                scrolls.pop()
-            }
-        }
-        else if (type === "push") scrolls.push(window.scrollY)
-
-        const {children, disableMobileAnimate} = this.props
-        const location = window.location.pathname
-
-        const urls = children.reduce((sum, item) =>
-        {
-            if (item?.props?.path) return [...sum, item.props.path === "*" ? ".*" : item.props.exact ? `^${item.props.path}$` : item.props.path.replace(/:\w+/g, ".*")]
-            else return [...sum, false]
-        }, [])
-
-        const showChildIndex = urls && urls.indexOf(urls.filter(url => url && new RegExp(url).test(location))[0])
-
-        if (showChildIndex !== -1)
-        {
-            if (this.state?.showChildIndex !== undefined && showChildIndex !== this.state.showChildIndex)
-            {
-                if (this.cont)
+                if (scrolls.length > 0)
                 {
-                    if (document.body.clientWidth <= 480 && !disableMobileAnimate)
-                    {
-                        if (type === "pop") this.mobileBack(showChildIndex, location, scrolls, scroll)
-                        else this.mobileForward(showChildIndex, location, scrolls)
-                    }
-                    else
-                    {
-                        if (this.cont.animate)
-                        {
-                            this.cont.style.willChange = "opacity"
-                            this.cont.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 300, easing: "ease"})
-                            setTimeout(() =>
-                            {
-                                this.setState({showChildIndex, location, scrolls}, () =>
-                                {
-                                    this.cont.animate([{opacity: 0}, {opacity: 1}], {duration: 150, easing: "ease"})
-                                    setTimeout(() =>
-                                    {
-                                        document.body.style.overflowY = "auto"
-                                        window.scroll({top: scroll})
-                                    }, 1)
-                                    setTimeout(() => this.cont.style.removeProperty("will-change"), 170)
-                                })
-                            }, 170)
-                        }
-                        else
-                        {
-                            this.setState({showChildIndex, location, scrolls}, () =>
-                                setTimeout(() =>
-                                {
-                                    document.body.style.overflowY = "auto"
-                                    window.scroll({top: scroll})
-                                }, 1),
-                            )
-                        }
-                    }
+                    scroll = scrolls[scrolls.length - 1]
+                    scrolls.pop()
                 }
-                else this.setState({showChildIndex, location, scrolls})
             }
-            else if (location !== this.state?.location) this.setState({showChildIndex, location, scrolls})
+            else if (type === "pushstate")
+            {
+                scrolls.push(window.scrollY)
+            }
+            return scroll
         }
-    }
 
-    mobileForward(showChildIndex, location, scrolls)
-    {
-        if (typeof requestAnimationFrame === "undefined")
+        function getUrls()
         {
-            if (this.cont.animate)
+            if (children?.reduce)
             {
-                this.cont.style.willChange = "transform, opacity"
-                this.cont.animate([{opacity: 1, transform: "translate3d(0, 0, 0)"}, {opacity: 0, transform: "translate3d(30%, 0, 0)"}, {opacity: 0, transform: "translate3d(30%, 0, 0)"}], {duration: 500, easing: "ease"})
-                setTimeout(() =>
+                return children.reduce((sum, item) =>
                 {
-                    this.setState({showChildIndex, location, scrolls}, () =>
-                    {
-                        this.cont.animate([{transform: "translate3d(-30%, 0, 0)", opacity: 0}, {transform: "translate3d(0, 0, 0)", opacity: 1}], {duration: 250, easing: "ease"})
-                        setTimeout(() =>
-                        {
-                            document.body.style.overflowY = "auto"
-                            window.scroll({top: 0})
-                        }, 1)
-                        setTimeout(() => this.cont.style.removeProperty("will-change"), 270)
-                    })
-                }, 270)
+                    if (item?.props?.path) return [...sum, item.props.path === "*" ? ".*" : item.props.exact ? `^${item.props.path}$` : item.props.path.replace(/:\w+/g, ".*")]
+                    else return [...sum, false]
+                }, [])
             }
-            else
+            else if (children?.props?.path)
             {
-                this.setState({showChildIndex, location, scrolls}, () =>
-                    setTimeout(() =>
-                    {
-                        document.body.style.overflowY = "auto"
-                        window.scroll({top: 0})
-                    }, 1),
-                )
+                return [children.props.path === "*" ? ".*" : children.props.exact ? `^${children.props.path}$` : children.props.path.replace(/:\w+/g, ".*")]
             }
+            else return [false]
+        }
+
+        function changeRoute(e)
+        {
+            const {type} = e
+            const urls = getUrls()
+            const locationTemp = window.location.pathname
+            const showChildIndexTemp = urls.indexOf(urls.filter(url => url && new RegExp(url).test(locationTemp))[0])
+            if (e?.target?.history?.state !== "for-history" && currentLocation.current !== locationTemp)
+            {
+                currentLocation.current = locationTemp
+                if (type === "initial" || currentIndex.current === showChildIndexTemp)
+                {
+                    currentIndex.current = showChildIndexTemp
+                    setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                }
+                else
+                {
+                    currentIndex.current = showChildIndexTemp
+                    const scroll = getScroll(type)
+                    if (window.innerWidth <= 480)
+                    {
+                        if (type === "popstate") mobileBack(showChildIndexTemp, locationTemp, scroll)
+                        else mobileForward(showChildIndexTemp, locationTemp, scroll)
+                    }
+                    else desktopRoute(showChildIndexTemp, locationTemp, scroll)
+                }
+            }
+        }
+
+        changeRoute({type: "initial"})
+
+        window.addEventListener("popstate", changeRoute, {passive: true})
+        window.addEventListener("pushstate", changeRoute, {passive: true})
+        window.addEventListener("replacestate", changeRoute, {passive: true})
+
+        return () =>
+        {
+            window.removeEventListener("popstate", changeRoute)
+            window.removeEventListener("pushstate", changeRoute)
+            window.removeEventListener("replacestate", changeRoute)
+        }
+        // eslint-disable-next-line
+    }, [])
+
+    function desktopRoute(showChildIndexTemp, locationTemp, scroll)
+    {
+        if (contRef.current.animate)
+        {
+            contRef.current.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 300, easing: "ease"})
+            setTimeout(() =>
+            {
+                if (contRef.current)
+                {
+                    setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                    contRef?.current?.animate([{opacity: 0}, {opacity: 1}], {duration: 150, easing: "ease"})
+                    setTimeout(() => window.scroll({top: scroll}), 0)
+                }
+            }, 170)
         }
         else
         {
-            const elem = this
+            setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+            window.scroll({top: scroll})
+        }
+    }
+
+    function mobileForward(showChildIndexTemp, locationTemp, scroll)
+    {
+        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, scroll)
+        else
+        {
             let translate = 0
-            let secondTranslate = -30
             let step = 1
-            elem.cont.style.willChange = "transform, opacity"
+            addProperties()
 
             function hide()
             {
-                if (elem.cont)
+                if (contRef.current)
                 {
                     translate = translate + step <= 30 ? translate + step : 30
                     step = translate + step + 1 <= 30 ? step + 1 : step
-                    elem.cont.style.transform = `translate3d(${translate}%, 0, 0)`
-                    elem.cont.style.opacity = `${0.9 - (translate / 30)}`
+                    contRef.current.style.transform = `translate3d(${translate}%, 0, 0)`
+                    contRef.current.style.opacity = `${0.9 - (translate / 30)}`
                     if (translate < 30) window.requestAnimationFrame(hide)
                     else
                     {
-                        elem.setState({...elem.state, showChildIndex, location}, () =>
-                        {
-                            setTimeout(() =>
-                            {
-                                document.body.style.overflowY = "auto"
-                                window.scroll({top: 0})
-                            }, 1)
-                            setTimeout(() => window.requestAnimationFrame(showNext), 150)
-                        })
+                        setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                        setTimeout(() => window.requestAnimationFrame(showNext), 150)
                     }
                 }
-                else elem.setState({...elem.state, showChildIndex, location})
             }
+
+            let secondTranslate = -30
 
             function showNext()
             {
-                secondTranslate = secondTranslate + step <= 0 ? secondTranslate + step : 0
-                step = step - 1 >= 1 ? step - 1 : 1
-                elem.cont.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
-                elem.cont.style.opacity = `${1 + (secondTranslate / 30)}`
-                if (secondTranslate < 0) window.requestAnimationFrame(showNext)
-                else
+                if (contRef.current)
                 {
-                    if (elem && elem.cont)
-                    {
-                        elem.cont.style.removeProperty("will-change")
-                        elem.cont.style.removeProperty("opacity")
-                        elem.cont.style.removeProperty("transform")
-                    }
+                    secondTranslate = secondTranslate + step <= 0 ? secondTranslate + step : 0
+                    step = step - 1 >= 1 ? step - 1 : 1
+                    contRef.current.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
+                    contRef.current.style.opacity = `${1 + (secondTranslate / 30)}`
+                    if (secondTranslate < 0) window.requestAnimationFrame(showNext)
+                    else removeProperties(scroll)
                 }
             }
 
@@ -186,87 +158,48 @@ class Switch extends PureComponent
         }
     }
 
-    mobileBack(showChildIndex, location, scrolls, scroll)
+    function mobileBack(showChildIndexTemp, locationTemp, scroll)
     {
-        if (typeof requestAnimationFrame === "undefined")
-        {
-            if (this.cont.animate)
-            {
-                this.cont.style.willChange = "transform, opacity"
-                this.cont.animate([{transform: "translate3d(0, 0, 0)", opacity: 1}, {transform: "translate3d(-30%, 0, 0)", opacity: 0}, {transform: "translate3d(-30%, 0, 0)", opacity: 0}], {duration: 500, easing: "ease"})
-                setTimeout(() =>
-                {
-                    this.setState({showChildIndex, location, scrolls}, () =>
-                    {
-                        this.cont.animate([{opacity: 0, transform: "translate3d(30%, 0, 0)"}, {opacity: 1, transform: "translate3d(0, 0, 0)"}], {duration: 250, easing: "ease"})
-                        setTimeout(() =>
-                        {
-                            document.body.style.overflowY = "auto"
-                            window.scroll({top: scroll})
-                        }, 1)
-                        setTimeout(() => this.cont.style.removeProperty("will-change"), 270)
-                    })
-                }, 270)
-            }
-            else
-            {
-                this.setState({showChildIndex, location, scrolls}, () =>
-                    setTimeout(() =>
-                    {
-                        document.body.style.overflowY = "auto"
-                        window.scroll({top: scroll})
-                    }, 1),
-                )
-            }
-        }
+        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, scroll)
         else
         {
-            const elem = this
             let translate = 0
-            let secondTranslate = 30
             let step = 1
-            elem.cont.style.willChange = "transform, opacity"
+            addProperties()
 
             function hide()
             {
-                if (elem.cont)
+                if (contRef.current)
                 {
                     translate = translate - step >= -30 ? translate - step : -30
                     step = translate - step + 1 >= -30 ? step + 1 : step
-                    elem.cont.style.transform = `translate3d(${translate}%, 0, 0)`
-                    elem.cont.style.opacity = `${0.9 + (translate / 30)}`
+                    contRef.current.style.transform = `translate3d(${translate}%, 0, 0)`
+                    contRef.current.style.opacity = `${0.9 + (translate / 30)}`
                     if (translate > -30) window.requestAnimationFrame(hide)
                     else
                     {
-                        elem.setState({...elem.state, showChildIndex, location}, () =>
+                        setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                        setTimeout(() =>
                         {
-                            setTimeout(() =>
-                            {
-                                document.body.style.overflowY = "auto"
-                                window.scroll({top: scroll})
-                            }, 1)
-                            setTimeout(() => window.requestAnimationFrame(showNext), 150)
-                        })
+                            innerContRef.current.scroll({top: scroll})
+                            window.requestAnimationFrame(showNext)
+                        }, 150)
                     }
                 }
-                else elem.setState({...elem.state, showChildIndex, location})
             }
+
+            let secondTranslate = 30
 
             function showNext()
             {
-                secondTranslate = secondTranslate - step >= 0 ? secondTranslate - step : 0
-                step = step - 1 >= 1 ? step - 1 : 1
-                elem.cont.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
-                elem.cont.style.opacity = `${1 - (secondTranslate / 30)}`
-                if (secondTranslate > 0) window.requestAnimationFrame(showNext)
-                else
+                if (contRef.current)
                 {
-                    if (elem && elem.cont)
-                    {
-                        elem.cont.style.removeProperty("will-change")
-                        elem.cont.style.removeProperty("opacity")
-                        elem.cont.style.removeProperty("transform")
-                    }
+                    secondTranslate = secondTranslate - step >= 0 ? secondTranslate - step : 0
+                    step = step - 1 >= 1 ? step - 1 : 1
+                    contRef.current.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
+                    contRef.current.style.opacity = `${1 - (secondTranslate / 30)}`
+                    if (secondTranslate > 0) window.requestAnimationFrame(showNext)
+                    else removeProperties(scroll)
                 }
             }
 
@@ -274,19 +207,45 @@ class Switch extends PureComponent
         }
     }
 
-    render()
+    function addProperties()
     {
-        const {showChildIndex, location} = this.state || {}
-        const {children, className} = this.props
-        const childrenWithProps = React.Children.map(children, child =>
+        if (contRef.current)
         {
-            if (React.isValidElement(child)) return React.cloneElement(child, {location})
-            else if (!child) return ""
-            else return child
-        })
-
-        return <div key="switch" className={className} ref={e => this.cont = e}>{(showChildIndex || showChildIndex === 0) && childrenWithProps[showChildIndex] ? childrenWithProps[showChildIndex] : null}</div>
+            const top = window.scrollY
+            contRef.current.style.willChange = "transform, opacity"
+            innerContRef.current.style.maxHeight = window.innerHeight + "px"
+            innerContRef.current.style.overflow = "auto"
+            innerContRef.current.scroll({top})
+        }
     }
+
+    function removeProperties(scroll)
+    {
+        if (contRef.current)
+        {
+            contRef.current.style.removeProperty("will-change")
+            contRef.current.style.removeProperty("opacity")
+            contRef.current.style.removeProperty("transform")
+            innerContRef.current.style.removeProperty("max-height")
+            innerContRef.current.style.removeProperty("overflow")
+            window.scroll({top: scroll})
+        }
+    }
+
+    const childrenWithProps = React.Children.map(children, child =>
+    {
+        if (React.isValidElement(child)) return React.cloneElement(child, {location})
+        else if (!child) return ""
+        else return child
+    })
+
+    return (
+        <div key="switch" className={className} ref={contRef}>
+            <div ref={innerContRef} className="hide-scroll">
+                {(showChildIndex || showChildIndex === 0) && childrenWithProps[showChildIndex] ? childrenWithProps[showChildIndex] : null}
+            </div>
+        </div>
+    )
 }
 
 export default Switch

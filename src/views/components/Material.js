@@ -1,13 +1,13 @@
 import {useRef, memo} from "react"
 
-function Material({children, backgroundColor, id, className, style, onClick})
+function Material({children, isDiv, backgroundColor, id, className, style, onClick, onDisableClick, disable})
 {
     const container = useRef(null)
     let buttonPressTimer, pageX, pageY, ripple
 
     function appendRipple({x, y}, isSlow)
     {
-        if (container?.current && x && y)
+        if (container?.current && x && y && !disable)
         {
             let target = container.current
             let rect = target.getBoundingClientRect()
@@ -22,7 +22,17 @@ function Material({children, backgroundColor, id, className, style, onClick})
             pageX = null
             pageY = null
 
-            if (!isSlow) setTimeout(() => target && target.removeChild(tempRipple), 600)
+            if (!isSlow) setTimeout(() =>
+            {
+                try
+                {
+                    target && tempRipple && target.removeChild(tempRipple)
+                }
+                catch (e)
+                {
+                    console.log("catch remove ripple")
+                }
+            }, 600)
         }
     }
 
@@ -103,22 +113,56 @@ function Material({children, backgroundColor, id, className, style, onClick})
         }
     }
 
-    return (
-        <div id={id}
-             ref={container}
-             onContextMenu={onContext}
-             style={style || {}}
-             className={`material ${className}`}
-             onMouseDown={onMouseDown}
-             onMouseUp={handleButtonRelease}
-             onMouseLeave={handleLeave}
-             onTouchStart={onTouchStart}
-             onTouchMove={onTouchMove}
-             onTouchEnd={onTouchEnd}
-             onClick={onClick}>
-            {children}
-        </div>
-    )
+    function onClickClick(e)
+    {
+        if (disable)
+        {
+            if (onDisableClick) onDisableClick()
+        }
+        else
+        {
+            if (onClick) onClick(e)
+        }
+    }
+
+    if (isDiv)
+    {
+        return (
+            <div id={id}
+                 ref={container}
+                 onContextMenu={onContext}
+                 style={style || {}}
+                 className={`material ${className}`}
+                 onMouseDown={onMouseDown}
+                 onMouseUp={handleButtonRelease}
+                 onMouseLeave={handleLeave}
+                 onTouchStart={onTouchStart}
+                 onTouchMove={onTouchMove}
+                 onTouchEnd={onTouchEnd}
+                 onClick={onClickClick}>
+                {children}
+            </div>
+        )
+    }
+    else
+    {
+        return (
+            <button id={id}
+                    ref={container}
+                    onContextMenu={onContext}
+                    style={style || {}}
+                    className={`material ${className}`}
+                    onMouseDown={onMouseDown}
+                    onMouseUp={handleButtonRelease}
+                    onMouseLeave={handleLeave}
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                    onClick={onClickClick}>
+                {children}
+            </button>
+        )
+    }
 }
 
 export default memo(Material)

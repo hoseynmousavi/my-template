@@ -1,10 +1,13 @@
-function ModalOnPopState({key, callback})
+import themeManager from "./themeManager"
+
+function popOnPopState({key, callback, dontChangeOverflow, statusBarColor})
 {
     function onPopState()
     {
         callback()
-        document.body.style.overflowY = "auto"
         window.removeEventListener("popstate", onPopState)
+        if (!dontChangeOverflow) document.body.style.overflowY = "auto"
+        if (statusBarColor) themeManager.resetBarColor()
         if (key) document.removeEventListener("keydown", onKeyDown)
     }
 
@@ -14,9 +17,10 @@ function ModalOnPopState({key, callback})
     }
 
     window.history.pushState("for-history", "", window.location.href)
-    document.body.style.overflowY = "hidden"
     window.addEventListener("popstate", onPopState, {passive: true})
+    if (!dontChangeOverflow) document.body.style.overflowY = "hidden"
+    if (statusBarColor) themeManager.changeBarColor({barColor: statusBarColor})
     if (key) document.addEventListener("keydown", onKeyDown, {passive: true})
 }
 
-export default ModalOnPopState
+export default popOnPopState
