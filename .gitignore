@@ -13,6 +13,7 @@
 # package-lock.json
 package-lock.json
 yarn.lock
+.DS_Store
 debug.log
 .eslintcache
 npm-debug.log*
