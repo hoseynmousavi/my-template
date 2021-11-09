@@ -6,8 +6,11 @@ source .env
 sed -i "s~NAME~$REACT_APP_NAME~g" build/index.html
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/index.html
 sed -i "s~KEYWORDS~$REACT_APP_KEYWORDS~g" build/index.html
-sed -i "s~DESKTOP_VIEWPORT~$REACT_APP_DESKTOP_VIEWPORT~g" build/index.html
 sed -i "s~PRECONNECT~$REACT_APP_REST_URL~g" build/index.html
+#sed -i "s~DNS~$REACT_APP_REST_URL~g" build/index.html
+sed -i "s~NAME~$REACT_APP_NAME~g" build/manifest.json
+sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/manifest.json
+sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/manifest.json
 sed -i "s~HEADER_HEIGHT~$REACT_APP_HEADER_HEIGHT~g" build/index.html
 sed -i "s~NAV_HEIGHT~$REACT_APP_NAV_HEIGHT~g" build/index.html
 sed -i "s~BTN_INPUT_HEIGHT~$REACT_APP_BTN_INPUT_HEIGHT~g" build/index.html
@@ -25,10 +28,6 @@ sed -i "s~TOAST_FAIL_BG~$REACT_APP_TOAST_FAIL_BG~g" build/index.html
 sed -i "s~TOAST_FAIL_TEXT~$REACT_APP_TOAST_FAIL_TEXT~g" build/index.html
 sed -i "s~FIRST_COLOR~$REACT_APP_FIRST_COLOR~g" build/index.html
 sed -i "s~SECOND_COLOR~$REACT_APP_SECOND_COLOR~g" build/index.html
-sed -i "s~FIRST_SUB_COLOR~$REACT_APP_FIRST_SUB_COLOR~g" build/index.html
-sed -i "s~SECOND_SUB_COLOR~$REACT_APP_SECOND_SUB_COLOR~g" build/index.html
-sed -i "s~THIRD_SUB_COLOR~$REACT_APP_THIRD_SUB_COLOR~g" build/index.html
-sed -i "s~FORTH_SUB_COLOR~$REACT_APP_FORTH_SUB_COLOR~g" build/index.html
 sed -i "s~DISABLE_BG_COLOR~$REACT_APP_DISABLE_BG_COLOR~g" build/index.html
 sed -i "s~DISABLE_TEXT_COLOR~$REACT_APP_DISABLE_TEXT_COLOR~g" build/index.html
 sed -i "s~LINK_COLOR~$REACT_APP_LINK_COLOR~g" build/index.html
@@ -57,8 +56,5 @@ sed -i "s~TITLE_FONT~$REACT_APP_TITLE_FONT~g" build/index.html
 sed -i "s~LARGE_FONT~$REACT_APP_LARGE_FONT~g" build/index.html
 sed -i "s~BIG_FONT~$REACT_APP_BIG_FONT~g" build/index.html
 sed -i "s~HUGE_FONT~$REACT_APP_HUGE_FONT~g" build/index.html
-sed -i "s~NAME~$REACT_APP_NAME~g" build/manifest.json
-sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/manifest.json
-sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/manifest.json
 #curl -X DELETE -H "Accept:application/json" -H "Authorization: $REACT_APP_ARVAN_KEY" -H "Accept-Language:fa" "https://napi.arvancloud.com/cdn/4.0/domains/$REACT_APP_MAIN_URL/caching?purge=all" -I
 echo "VARIABLES SET SUCCESSFULLY"
