@@ -6,10 +6,13 @@ const ImageLoading = forwardRef(({className, style, src, alt, loading, onClick, 
 
     useEffect(() =>
     {
-        const img = new Image()
-        img.src = src
-        if (img.complete) setIsLoaded(true)
-        else img.onload = () => setIsLoaded(true)
+        if (src)
+        {
+            const img = new Image()
+            img.src = src
+            if (img.complete) setIsLoaded(true)
+            else img.onload = () => setIsLoaded(true)
+        }
         // eslint-disable-next-line
     }, [])
 

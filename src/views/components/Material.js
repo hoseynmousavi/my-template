@@ -30,7 +30,6 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
                 }
                 catch (e)
                 {
-                    console.log("catch remove ripple")
                 }
             }, 600)
         }
@@ -55,12 +54,12 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onContext()
     {
-        document.body.clientWidth <= 480 && onTouchMove()
+        window.innerWidth <= 480 && onTouchMove()
     }
 
     function handleButtonRelease(e)
     {
-        if (document.body.clientWidth > 480)
+        if (window.innerWidth > 480)
         {
             clearTimeout(buttonPressTimer)
             if (!ripple) appendRipple({x: e.clientX, y: e.clientY}, false)
@@ -70,12 +69,12 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onMouseDown(e)
     {
-        if (document.body.clientWidth > 480) buttonPressTimer = setTimeout(() => appendRipple({x: e.clientX, y: e.clientY}, true), 300)
+        if (window.innerWidth > 480) buttonPressTimer = setTimeout(() => appendRipple({x: e.clientX, y: e.clientY}, true), 300)
     }
 
     function handleLeave()
     {
-        if (document.body.clientWidth > 480)
+        if (window.innerWidth > 480)
         {
             clearTimeout(buttonPressTimer)
             removeRipple(true)
@@ -84,7 +83,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onTouchStart(e)
     {
-        if (document.body.clientWidth <= 480)
+        if (window.innerWidth <= 480)
         {
             pageX = e.touches[0].clientX
             pageY = e.touches[0].clientY
@@ -94,7 +93,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onTouchMove()
     {
-        if (document.body.clientWidth <= 480)
+        if (window.innerWidth <= 480)
         {
             clearTimeout(buttonPressTimer)
             removeRipple(true)
@@ -105,7 +104,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onTouchEnd()
     {
-        if (document.body.clientWidth <= 480)
+        if (window.innerWidth <= 480)
         {
             clearTimeout(buttonPressTimer)
             if (!ripple) appendRipple({x: pageX, y: pageY}, false)

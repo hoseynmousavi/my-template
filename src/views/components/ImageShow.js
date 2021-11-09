@@ -94,8 +94,8 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
         copyImage.style.height = rect.height + "px"
         copyImage.style.width = rect.width + "px"
         copyImage.style.left = rect.left + "px"
-        copyImage.style.borderRadius = imgRef.current.style.borderRadius
-        copyImage.style.boxShadow = imgRef.current.style.boxShadow
+        copyImage.style.borderRadius = getComputedStyle(imgRef.current).getPropertyValue("border-radius")
+        copyImage.style.boxShadow = getComputedStyle(imgRef.current).getPropertyValue("box-shadow")
         copyImage.style.right = "auto"
         setTimeout(() =>
         {

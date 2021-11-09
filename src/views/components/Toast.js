@@ -1,13 +1,15 @@
-import {useEffect, useRef} from "react"
+import {useContext, useEffect, useRef} from "react"
 import PlusSvg from "../../media/svg/PlusSvg"
 import Material from "./Material"
 import CheckSvg from "../../media/svg/CheckSvg"
 import InfoSvg from "../../media/svg/InfoSvg"
 import CloseSvg from "../../media/svg/CloseSvg"
 import {INFO_TOAST, SUCCESS_TOAST} from "../../constant/toastTypes"
+import {ThemeContext} from "../../context/theme/ThemeReducer"
 
 function Toast({item: {message, type, onClick}, clearMe, location})
 {
+    const {state: {theme}} = useContext(ThemeContext)
     const toastRef = useRef(null)
     const clearTimer = useRef(null)
     const unMountTimer = useRef(null)
@@ -46,16 +48,16 @@ function Toast({item: {message, type, onClick}, clearMe, location})
     }
 
     return (
-        <div className={`toast-item ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClick : clearItem}>
+        <div className={`toast-item ${theme === "dark" ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClick : clearItem}>
             <div className="toast-item-message">
                 {
                     type === SUCCESS_TOAST ?
-                        <CheckSvg className="toast-item-svg success"/>
+                        <CheckSvg className={`toast-item-svg success ${theme === "dark" ? "dark" : ""}`}/>
                         :
                         type === INFO_TOAST ?
-                            <InfoSvg className="toast-item-svg"/>
+                            <InfoSvg className={`toast-item-svg info ${theme === "dark" ? "dark" : ""}`}/>
                             :
-                            <CloseSvg className="toast-item-svg"/>
+                            <CloseSvg className={`toast-item-svg fail ${theme === "dark" ? "dark" : ""}`}/>
                 }
                 {message}
             </div>
