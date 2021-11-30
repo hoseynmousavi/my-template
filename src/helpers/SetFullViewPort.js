@@ -1,8 +1,5 @@
 import Resize from "./Resize"
 import {useRef} from "react"
-import isIos from "./isIos"
-import isStandalone from "./isStandalone"
-import isSafari from "./isSafari"
 
 function SetFullViewPort()
 {
@@ -14,10 +11,7 @@ function SetFullViewPort()
     {
         document.documentElement.style.setProperty(
             "--full-height",
-            isIos() && isSafari() && !isStandalone() ?
-                "100vh"
-                :
-                clientHeight + "px",
+            clientHeight + "px",
         )
     }, 10)
 }
