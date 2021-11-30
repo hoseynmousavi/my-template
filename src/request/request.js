@@ -1,7 +1,4 @@
 import axios from "axios"
-import toastManager from "../helpers/toastManager"
-import {FAIL_TOAST} from "../constant/toastTypes"
-import errorConstant from "../constant/errorConstant"
 import requestErrorHandler from "./requestErrorHandler"
 import urlMaker from "./urlMaker"
 
