@@ -19,15 +19,11 @@ function get({url, param = "", dontToast, dontCache, useRefreshToken})
         })
         .catch(err =>
         {
-            if (err?.response?.status !== 403 && err.message === "Network Error" && !dontCache)
+            if (err.message === "Network Error" && !dontCache)
             {
                 const cacheData = localStorage.getItem(url + "/" + param)
                 if (cacheData) return JSON.parse(cacheData)
-                else
-                {
-                    if (!dontToast) toastManager.addToast({message: errorConstant(err), type: FAIL_TOAST})
-                    throw err
-                }
+                else return requestErrorHandler({dontToast, err, callback: () => get(arguments[0])})
             }
             else return requestErrorHandler({dontToast, err, callback: () => get(arguments[0])})
         })
