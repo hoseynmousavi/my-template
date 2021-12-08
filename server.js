@@ -8,6 +8,17 @@ app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 dotenv.config({path: path.resolve(process.cwd(), ".env")})
 
+app.route("/static/:folder/:file").get((req, res) =>
+{
+    if (fs.existsSync(path.join(__dirname, `/build/static/${req.params.folder}/${req.params.file}`)))
+    {
+        res.setHeader("Vary", "Accept-Encoding")
+        res.setHeader("Cache-Control", "max-age=2592000")
+        res.sendFile(path.join(__dirname, `/build/static/${req.params.folder}/${req.params.file}`))
+    }
+    else res.sendStatus(404)
+})
+
 app.route("/:file").get((req, res) =>
 {
     res.setHeader("Vary", "Accept-Encoding")
