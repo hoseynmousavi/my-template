@@ -1,0 +1,47 @@
+.button {
+  color: var(--solid-light);
+  text-align: center;
+  height: var(--btn-input-height);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--second-radius);
+  font-size: var(--large-font);
+  font-family: my-font-bold, serif;
+  cursor: pointer;
+  transition: background-color ease 0.2s;
+
+  &.first {
+    background-color: var(--first-color);
+  }
+
+  &.skip {
+    background-color: var(--second-background-color);
+    color: var(--second-text-color);
+  }
+
+  &.disable {
+    background-color: var(--disable-bg-color);
+    color: var(--disable-text-color);
+    cursor: not-allowed;
+  }
+
+  &.loading {
+    background-color: var(--second-radius);
+    border: 2px solid var(--first-border-color);
+    cursor: not-allowed;
+  }
+
+  &.active {
+    &:focus-visible {
+      box-shadow: 0 0 0 2px var(--second-color);
+    }
+  }
+}
+
+button {
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--first-color);
+  }
+}

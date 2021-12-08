@@ -1,0 +1,114 @@
+.input-label {
+  display: block;
+  width: 100%;
+  margin-bottom: 25px;
+}
+
+.input-label-relative {
+  position: relative;
+}
+
+.input-label-text {
+  font-size: var(--title-font);
+  font-family: my-font-bold, serif;
+}
+
+.input-label-err {
+  color: var(--toast-fail-text);
+  overflow: hidden;
+  height: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  transition: height ease 0.2s, opacity ease 0.2s;
+
+  &.no-space {
+    position: absolute;
+  }
+
+  &.show {
+    opacity: 1;
+    height: 35px;
+  }
+}
+
+.input-main {
+  font-size: var(--title-font);
+  font-family: my-font-bold, serif;
+  margin-top: 10px;
+  height: var(--btn-input-height);
+  width: 100%;
+  padding: 0 12px;
+  border: 2px solid var(--first-border-color);
+  border-radius: var(--first-radius);
+  transition: border ease 0.2s;
+
+  &.have-icon {
+    padding: 0 12px 0 48px;
+  }
+
+  &.ltr {
+    direction: ltr;
+
+    &.have-icon {
+      padding: 0 48px 0 12px;
+    }
+  }
+
+  &:disabled {
+    background-color: var(--second-background-color);
+  }
+
+  &:focus {
+    border: 2px solid var(--first-text-color);
+  }
+
+  &.err {
+    border: 2px solid var(--toast-fail-text);
+  }
+
+  &::placeholder {
+    font-family: my-font, serif;
+    color: var(--second-text-color);
+  }
+
+  &:placeholder-shown {
+    direction: rtl;
+  }
+
+  &.ltr-placeholder {
+    &:placeholder-shown {
+      direction: ltr;
+    }
+  }
+}
+
+.input-icon {
+  position: absolute;
+  top: 26px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+
+  &.rtl {
+    right: initial;
+    left: 12px;
+  }
+
+  &.icon {
+    path {
+      stroke: var(--first-color);
+    }
+  }
+
+  &.validation {
+    opacity: 0;
+    transition: opacity ease 0.2s 0.1s;
+
+    &.show {
+      opacity: 1;
+      transition: opacity ease 0.2s 0s;
+    }
+  }
+}
