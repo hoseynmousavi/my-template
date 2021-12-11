@@ -2,12 +2,22 @@ import axios from "axios"
 import requestErrorHandler from "./requestErrorHandler"
 import urlMaker from "./urlMaker"
 
-function get({url, param = "", dontToast, dontCache, useRefreshToken})
+function get({url, param = "", dontToast, dontCache, useRefreshToken, cancel})
 {
     const token = useRefreshToken ? localStorage.getItem("refreshToken") : localStorage.getItem("token")
+    let source
+    if (cancel)
+    {
+        const CancelToken = axios.CancelToken
+        source = CancelToken.source()
+        cancel(source)
+    }
     return axios.get(
         urlMaker({url, param}),
-        {headers: token && {[useRefreshToken ? "x-refresh-token" : "Authorization"]: token}},
+        {
+            headers: token && {[useRefreshToken ? "x-refresh-token" : "Authorization"]: token},
+            cancelToken: source?.token,
+        },
     )
         .then(res =>
         {
