@@ -2,6 +2,7 @@ import toastManager from "../helpers/toastManager"
 import errorConstant from "../constant/errorConstant"
 import {FAIL_TOAST} from "../constant/toastTypes"
 import refreshToken from "./refreshToken"
+import toastConstant from "../constant/toastConstant"
 
 function requestErrorHandler({useRefreshToken, dontToast, err, callback})
 {
@@ -17,7 +18,7 @@ function requestErrorHandler({useRefreshToken, dontToast, err, callback})
     }
     else
     {
-        if (!dontToast && err?.response?.status !== 404) toastManager.addToast({message: errorConstant(err), type: FAIL_TOAST})
+        if (!dontToast && err?.response?.status !== 404 && err?.message !== toastConstant.requestCancel) toastManager.addToast({message: errorConstant(err), type: FAIL_TOAST})
         throw err
     }
 }
