@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+
 // See https://developers.google.com/web/tools/workbox/modules
 
 import {clientsClaim} from "workbox-core"
@@ -63,5 +65,4 @@ self.addEventListener("push", event =>
 self.onnotificationclick = event =>
 {
     event.notification.close()
-    event.waitUntil(clients.matchAll({type: "window"}).then(_ => clients.openWindow && clients.openWindow(event.notification.data.url || self.location.origin)))
 }
