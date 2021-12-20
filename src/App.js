@@ -5,7 +5,7 @@ function App({location})
 {
     return (
         <>
-            FUCK
+            YES
             <ThemeColorBar/>
             <ToastContainer location={location}/>
         </>
