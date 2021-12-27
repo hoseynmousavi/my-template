@@ -10,7 +10,7 @@ RUN rm package-lock.json
 
 COPY . .
 
-RUN npm run build
+RUN npm run dockerbuild
 
 RUN bash +x set-variables.sh
 

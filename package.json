@@ -18,8 +18,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "postbuild": ".\\set-variables.sh || ./set-variables.sh"
+    "build": "react-scripts build && .\\set-variables.sh || ./set-variables.sh",
+    "dockerbuild": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [
