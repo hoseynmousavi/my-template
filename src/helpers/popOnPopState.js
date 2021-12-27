@@ -3,13 +3,25 @@ import changeBodyOverflow from "./changeBodyOverflow"
 
 function popOnPopState({key, callback, dontPush, dontChangeOverflow, statusBarColor})
 {
+    let pushed = 0
+
+    function onPushState()
+    {
+        pushed++
+    }
+
     function onPopState()
     {
-        callback()
-        window.removeEventListener("popstate", onPopState)
-        if (!dontChangeOverflow) changeBodyOverflow(false)
-        if (statusBarColor) themeManager.resetBarColor()
-        if (key) document.removeEventListener("keydown", onKeyDown)
+        if (pushed && !dontPush) pushed--
+        else
+        {
+            callback()
+            window.removeEventListener("popstate", onPopState)
+            window.removeEventListener("pushstate", onPushState)
+            if (!dontChangeOverflow) changeBodyOverflow(false)
+            if (statusBarColor) themeManager.resetBarColor()
+            if (key) document.removeEventListener("keydown", onKeyDown)
+        }
     }
 
     function onKeyDown(e)
@@ -19,6 +31,7 @@ function popOnPopState({key, callback, dontPush, dontChangeOverflow, statusBarCo
 
     if (!dontPush) window.history.pushState("for-history", "", window.location.href)
     window.addEventListener("popstate", onPopState, {passive: true})
+    window.addEventListener("pushstate", onPushState, {passive: true})
     if (!dontChangeOverflow) changeBodyOverflow(true)
     if (statusBarColor) themeManager.changeBarColor({barColor: statusBarColor})
     if (key) document.addEventListener("keydown", onKeyDown, {passive: true})
