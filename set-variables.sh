@@ -24,7 +24,9 @@ sed -i "s~HEADER_Z_INDEX~$REACT_APP_HEADER_Z_INDEX~g" build/index.html
 sed -i "s~MODAL_Z_INDEX~$REACT_APP_MODAL_Z_INDEX~g" build/index.html
 sed -i "s~DEFAULT_Z_INDEX~$REACT_APP_DEFAULT_Z_INDEX~g" build/index.html
 sed -i "s~TOAST_SUCCESS_BG~$REACT_APP_TOAST_SUCCESS_BG~g" build/index.html
+sed -i "s~TOAST_SUCCESS_TEXT~$REACT_APP_TOAST_SUCCESS_TEXT~g" build/index.html
 sed -i "s~TOAST_INFO_BG~$REACT_APP_TOAST_INFO_BG~g" build/index.html
+sed -i "s~TOAST_INFO_TEXT~$REACT_APP_TOAST_INFO_TEXT~g" build/index.html
 sed -i "s~TOAST_FAIL_BG~$REACT_APP_TOAST_FAIL_BG~g" build/index.html
 sed -i "s~TOAST_FAIL_TEXT~$REACT_APP_TOAST_FAIL_TEXT~g" build/index.html
 sed -i "s~FIRST_COLOR~$REACT_APP_FIRST_COLOR~g" build/index.html
@@ -47,7 +49,6 @@ sed -i "s~FIRST_SHADOW~$REACT_APP_FIRST_SHADOW~g" build/index.html
 sed -i "s~SECOND_SHADOW~$REACT_APP_SECOND_SHADOW~g" build/index.html
 sed -i "s~FIRST_RADIUS~$REACT_APP_FIRST_RADIUS~g" build/index.html
 sed -i "s~SECOND_RADIUS~$REACT_APP_SECOND_RADIUS~g" build/index.html
-sed -i "s~THIRD_RADIUS~$REACT_APP_THIRD_RADIUS~g" build/index.html
 sed -i "s~MATERIAL_COLOR~$REACT_APP_MATERIAL_COLOR~g" build/index.html
 sed -i "s~DAMN_FONT~$REACT_APP_DAMN_FONT~g" build/index.html
 sed -i "s~TINY_FONT~$REACT_APP_TINY_FONT~g" build/index.html

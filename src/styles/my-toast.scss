@@ -14,7 +14,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--first-color);
+  color: var(--toast-success-text);
   border-radius: var(--second-radius);
   font-family: my-font-bold, serif;
   font-size: var(--title-font);
@@ -24,19 +24,19 @@
 
   &.SUCCESS_TOAST {
     background-color: var(--toast-success-bg);
-    color: var(--first-color);
+    color: var(--toast-success-text);
 
     .toast-item-close {
-      fill: var(--first-color);
+      fill: var(--toast-success-text);
     }
   }
 
   &.INFO_TOAST {
     background-color: var(--toast-info-bg);
-    color: var(--link-color);
+    color: var(--toast-info-text);
 
     .toast-item-close {
-      fill: var(--link-color);
+      fill: var(--toast-info-text);
     }
   }
 
