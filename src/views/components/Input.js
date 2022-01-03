@@ -105,7 +105,11 @@ function Input({
                     }
                     else onChange({name, value})
                 }
-                else onChange({name, value: value || required ? null : ""})
+                else
+                {
+                    onChange({name, value: value || required ? null : ""})
+                    checkErrTimer()
+                }
             }
             else if (validation === "national_code")
             {
