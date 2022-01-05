@@ -1,4 +1,12 @@
-@mixin justify {
-  text-align: justify;
-  white-space: pre-line;
+@mixin change-view {
+  transform: translate(0, 0);
+  overflow: hidden;
+  height: var(--full-height);
+
+  #root {
+    scrollbar-width: thin;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
