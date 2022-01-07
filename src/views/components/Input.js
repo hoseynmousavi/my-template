@@ -3,7 +3,7 @@ import regexConstant from "../../constant/regexConstant"
 import checkNationalCode from "../../helpers/checkNationalCode"
 import numberCorrection from "../../helpers/numberCorrection"
 import inputKeyDownEnter from "../../helpers/inputKeyDownEnter"
-// import AuthActions from "../../context/auth/AuthActions"
+import AuthActions from "../../context/auth/AuthActions"
 import toastConstant from "../../constant/toastConstant"
 import MyLoader from "./MyLoader"
 import CheckSvg from "../../media/svg/CheckSvg"
@@ -19,7 +19,7 @@ function Input({
     const [error, setError] = useState("")
     const inputRef = useRef(null)
     const validationTimer = useRef(null)
-    // const validationIconTimer = useRef(null)
+    const validationIconTimer = useRef(null)
     const validationCancel = useRef(null)
 
     useEffect(() =>
@@ -56,7 +56,7 @@ function Input({
         return () =>
         {
             clearTimeout(validationTimer.current)
-            // clearTimeout(validationIconTimer.current)
+            clearTimeout(validationIconTimer.current)
         }
         // eslint-disable-next-line
     }, [])
@@ -70,7 +70,7 @@ function Input({
                 const value = numberCorrection(e.target.value.trim())
                 setValue(value)
                 setValidationLoading("")
-                // clearTimeout(validationIconTimer.current)
+                clearTimeout(validationIconTimer.current)
                 clearTimeout(validationTimer.current)
                 if (regexConstant.EMAIL_REGEX.test(value))
                 {
@@ -83,22 +83,22 @@ function Input({
                             validationTimer.current = setTimeout(() =>
                             {
                                 setValidationLoading("loading")
-                                // AuthActions.checkEmail({email: value, cancel: cancelSource => validationCancel.current = cancelSource})
-                                //     .then(() =>
-                                //     {
-                                //         setValidationLoading("NOK")
-                                //         setError(toastConstant.repeatedEmail)
-                                //     })
-                                //     .catch(err =>
-                                //     {
-                                //         if (err?.response?.status === 404)
-                                //         {
-                                //             setValidationLoading("OK")
-                                //             validationIconTimer.current = setTimeout(() => setValidationLoading(""), 1000)
-                                //             onChange({name, value})
-                                //         }
-                                //         else setValidationLoading("NOK")
-                                //     })
+                                AuthActions.checkEmail({email: value, cancel: cancelSource => validationCancel.current = cancelSource})
+                                    .then(() =>
+                                    {
+                                        setValidationLoading("NOK")
+                                        setError(toastConstant.repeatedEmail)
+                                    })
+                                    .catch(err =>
+                                    {
+                                        if (err?.response?.status === 404)
+                                        {
+                                            setValidationLoading("OK")
+                                            validationIconTimer.current = setTimeout(() => setValidationLoading(""), 1000)
+                                            onChange({name, value})
+                                        }
+                                        else setValidationLoading("NOK")
+                                    })
                             }, 250)
                         }
                         else onChange({name, value})

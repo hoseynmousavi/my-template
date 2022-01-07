@@ -13,7 +13,7 @@ function PrivateRoute({ifNotLogin, dontChange, path, render, ...props})
         if (ifNotLogin)
         {
             if (!user) return <Route path={path} render={render} {...props}/>
-            else return <Redirect to="/"/>
+            else return <Redirect to={urlConstant.home}/>
         }
         else
         {

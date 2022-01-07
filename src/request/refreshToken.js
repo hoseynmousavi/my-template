@@ -3,6 +3,7 @@ import {FAIL_TOAST} from "../constant/toastTypes"
 import logoutManager from "../helpers/logoutManager"
 import refreshTokenManager from "./refreshTokenManager"
 import toastManager from "../helpers/toastManager"
+import AuthActions from "../context/auth/AuthActions"
 
 let isRefreshing = false
 
@@ -12,27 +13,27 @@ function refreshToken()
     {
         if (!isRefreshing)
         {
-            // isRefreshing = true
-            // getTokenWithRefreshToken()
-            //     .then(status =>
-            //     {
-            //         if (status)
-            //         {
-            //             isRefreshing = false
-            //             refreshTokenManager.configRefreshToken()
-            //             refreshTokenManager.refreshToken({message: "OK"})
-            //             resolve()
-            //         }
-            //         else
-            //         {
-            isRefreshing = false
-            toastManager.addToast({message: toastConstant.tokenExpired, type: FAIL_TOAST})
-            logoutManager.logout()
-            refreshTokenManager.configRefreshToken()
-            refreshTokenManager.refreshToken({message: "NOK"})
-            //         reject()
-            //     }
-            // })
+            isRefreshing = true
+            AuthActions.getTokenWithRefreshToken()
+                .then(status =>
+                {
+                    if (status)
+                    {
+                        isRefreshing = false
+                        refreshTokenManager.configRefreshToken()
+                        refreshTokenManager.refreshToken({message: "OK"})
+                        resolve()
+                    }
+                    else
+                    {
+                        isRefreshing = false
+                        toastManager.addToast({message: toastConstant.tokenExpired, type: FAIL_TOAST})
+                        logoutManager.logout()
+                        refreshTokenManager.configRefreshToken()
+                        refreshTokenManager.refreshToken({message: "NOK"})
+                        reject()
+                    }
+                })
         }
         else
         {

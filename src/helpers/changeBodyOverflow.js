@@ -1,17 +1,20 @@
 import isIos from "./isIos"
 import isStandalone from "./isStandalone"
+import checkViewPort from "./checkViewPort"
 
 function changeBodyOverflow(makeHide)
 {
     if (makeHide)
     {
         if (isIos() && isStandalone()) lockScroll()
+        else if (checkViewPort()) document.getElementById("root").style.overflowY = "hidden"
         else document.body.style.overflowY = "hidden"
     }
     else
     {
         if (isIos() && isStandalone()) unlockScroll()
-        else document.body.style.overflowY = "auto"
+        else if (checkViewPort()) document.getElementById("root").style.removeProperty("overflow-y")
+        else document.body.style.removeProperty("overflow-y")
     }
 }
 
