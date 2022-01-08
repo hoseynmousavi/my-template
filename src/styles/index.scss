@@ -35,7 +35,7 @@ body {
   overscroll-behavior-y: contain;
   -webkit-font-smoothing: antialiased;
 
-  @media screen and (min-width: 450px) {
+  @media screen and (min-width: 1920px) {
     background-color: var(--solid-dark) !important;
     .index-temp {
       background-color: var(--first-background-color);
@@ -61,7 +61,7 @@ body {
   }
 }
 
-button, a, input, textarea, h4, h3, h2, h1, select, video, p, track, label, div, header, footer, section, svg, img, span {
+button, a, input, textarea, h4, h3, h2, h1, select, video, p, track, label, div, header, main, footer, section, svg, img, span {
   -webkit-appearance: none;
   box-sizing: border-box;
   padding: 0;
