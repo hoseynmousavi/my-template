@@ -199,7 +199,7 @@ function Switch({children})
         innerContRef.className = "hide-scroll"
         if (!checkViewPort())
         {
-            const top = root.scrollY || root.scrollTop
+            const top = root.scrollY || root.scrollY === 0 ? root.scrollY : root.scrollTop
             innerContRef.style.maxHeight = clientHeight + "px"
             innerContRef.style.overflowY = "auto"
             innerContRef.style.overflowX = "hidden"
