@@ -28,7 +28,7 @@ function Switch({children})
                     scrolls.pop()
                 }
             }
-            else if (type === "pushstate") scrolls.push(root.scrollY || root.scrollTop)
+            else if (type === "pushstate") scrolls.push(root.scrollY || root.scrollY === 0 ? root.scrollY : root.scrollTop)
             return scroll
         }
 
