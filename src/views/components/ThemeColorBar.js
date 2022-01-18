@@ -1,11 +1,11 @@
 import {useContext, useEffect, useState} from "react"
-import getComputedStyleHelper from "../../helpers/getComputedStyleHelper"
 import {ThemeContext} from "../../context/theme/ThemeReducer"
+import themeConstant from "../../constant/themeConstant"
 
 function ThemeColorBar()
 {
     const {state: {theme}} = useContext(ThemeContext)
-    const [barColor, setBarColor] = useState(getComputedStyleHelper("--first-background-color"))
+    const [barColor, setBarColor] = useState(themeConstant.defaultColor)
 
     useEffect(() =>
     {

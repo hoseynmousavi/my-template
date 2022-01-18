@@ -1,4 +1,4 @@
-import getComputedStyleHelper from "./getComputedStyleHelper"
+import themeConstant from "../constant/themeConstant"
 
 const configTheme = () =>
 {
@@ -19,7 +19,7 @@ const changeBarColor = ({barColor}) =>
 
 const resetBarColor = () =>
 {
-    window.changeBarColor({barColor: getComputedStyleHelper("--first-background-color")})
+    window.changeBarColor({barColor: themeConstant.defaultColor})
 }
 
 const themeManager = {
