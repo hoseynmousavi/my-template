@@ -5,8 +5,8 @@ function App({location})
 {
     return (
         <div id="index-temp" className="index-temp">
-            YES
             <ThemeColorBar/>
+            YES
             <ToastContainer location={location}/>
         </div>
     )
