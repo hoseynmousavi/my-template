@@ -22,8 +22,9 @@ sed -i "s~MOBILE_FIRST_SOLID_PADDING~$REACT_APP_MOBILE_FIRST_SOLID_PADDING~g" bu
 sed -i "s~MOBILE_SECOND_GRID_PADDING~$REACT_APP_MOBILE_SECOND_GRID_PADDING~g" build/index.html
 sed -i "s~MOBILE_SECOND_SOLID_PADDING~$REACT_APP_MOBILE_SECOND_SOLID_PADDING~g" build/index.html
 sed -i "s~FIRST_LINE_HEIGHT~$REACT_APP_FIRST_LINE_HEIGHT~g" build/index.html
-sed -i "s~HEADER_Z_INDEX~$REACT_APP_HEADER_Z_INDEX~g" build/index.html
+sed -i "s~TOAST_Z_INDEX~$REACT_APP_TOAST_Z_INDEX~g" build/index.html
 sed -i "s~MODAL_Z_INDEX~$REACT_APP_MODAL_Z_INDEX~g" build/index.html
+sed -i "s~HEADER_Z_INDEX~$REACT_APP_HEADER_Z_INDEX~g" build/index.html
 sed -i "s~DEFAULT_Z_INDEX~$REACT_APP_DEFAULT_Z_INDEX~g" build/index.html
 sed -i "s~TOAST_SUCCESS_BG~$REACT_APP_TOAST_SUCCESS_BG~g" build/index.html
 sed -i "s~TOAST_SUCCESS_TEXT~$REACT_APP_TOAST_SUCCESS_TEXT~g" build/index.html

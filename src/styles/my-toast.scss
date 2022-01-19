@@ -6,7 +6,7 @@
   overflow: hidden;
   width: calc(100% - 30px);
   right: 15px;
-  z-index: var(--modal-z-index);
+  z-index: var(--toast-z-index);
   pointer-events: none;
 }
 
@@ -51,7 +51,7 @@
 
   &.dark {
     &.SUCCESS_TOAST {
-      background-color: var(--first-color);
+      background-color: var(--toast-success-text);
       color: var(--solid-light);
 
       .toast-item-close {
@@ -60,7 +60,7 @@
     }
 
     &.INFO_TOAST {
-      background-color: var(--link-color);
+      background-color: var(--toast-info-text);
       color: var(--solid-light);
 
       .toast-item-close {
