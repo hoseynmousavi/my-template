@@ -1,6 +1,6 @@
 import axios from "axios"
 import urlMaker from "./urlMaker"
-import errorHandler from "./requestErrorHandler"
+import errorHandler from "./errorHandler"
 import requestDataShareManager from "./requestDataShareManager"
 
 let onGoingReqs = {}
@@ -75,7 +75,7 @@ function get({url, param = "", dontToast, dontCache, cancel, useRefreshToken})
     }
 }
 
-function post({url, data, param, progress, cache, cancel, dontToast, useRefreshToken})
+function post({url, data, param = "", progress, cache, cancel, dontToast, useRefreshToken})
 {
     const reqUrl = urlMaker({url, param})
     if (onGoingReqs[reqUrl]) return handleRepeat({reqUrl})
@@ -126,11 +126,12 @@ function post({url, data, param, progress, cache, cancel, dontToast, useRefreshT
     }
 }
 
-function put({url, data, param, progress, dontToast})
+function put({url, data, param = "", progress, dontToast})
 {
+    const reqUrl = urlMaker({url, param})
     const token = localStorage.getItem("token")
     return axios.put(
-        urlMaker({url, param}),
+        reqUrl,
         data,
         {
             headers: {"Authorization": token},
@@ -138,14 +139,15 @@ function put({url, data, param, progress, dontToast})
         },
     )
         .then(res => res.data)
-        .catch(err => errorHandler({dontToast, err, callback: () => put(arguments[0])}))
+        .catch(err => errorHandler({dontToast, err, reqUrl, callback: () => put(arguments[0])}))
 }
 
-function patch({url, data, param, progress, dontToast})
+function patch({url, data, param = "", progress, dontToast})
 {
+    const reqUrl = urlMaker({url, param})
     const token = localStorage.getItem("token")
     return axios.patch(
-        urlMaker({url, param}),
+        reqUrl,
         data,
         {
             headers: {"Authorization": token},
@@ -153,21 +155,22 @@ function patch({url, data, param, progress, dontToast})
         },
     )
         .then(res => res.data)
-        .catch(err => errorHandler({dontToast, err, callback: () => patch(arguments[0])}))
+        .catch(err => errorHandler({dontToast, err, reqUrl, callback: () => patch(arguments[0])}))
 }
 
-function del({url, data, param, dontToast})
+function del({url, data, param = "", dontToast})
 {
+    const reqUrl = urlMaker({url, param})
     const token = localStorage.getItem("token")
     return axios.delete(
-        urlMaker({url, param}),
+        reqUrl,
         {
             headers: {"Authorization": token},
             data,
         },
     )
         .then(res => res.data)
-        .catch(err => errorHandler({dontToast, err, callback: () => del(arguments[0])}))
+        .catch(err => errorHandler({dontToast, err, reqUrl, callback: () => del(arguments[0])}))
 }
 
 const request = {

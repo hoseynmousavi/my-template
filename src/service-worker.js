@@ -7,6 +7,8 @@ import {precacheAndRoute, createHandlerBoundToURL} from "workbox-precaching"
 import {registerRoute} from "workbox-routing"
 import {NetworkFirst, NetworkOnly, StaleWhileRevalidate} from "workbox-strategies"
 import {ExpirationPlugin} from "workbox-expiration"
+import {Queue} from "workbox-background-sync"
+import offlineSending from "./constant/offlineSending"
 
 clientsClaim()
 
@@ -66,3 +68,27 @@ self.onnotificationclick = event =>
 {
     event.notification.close()
 }
+
+
+const queue = new Queue("app-boomino")
+
+self.addEventListener("fetch", event =>
+{
+    if (offlineSending.some(item => event.request.url.includes(item)))
+    {
+        const bgSyncLogic = async () =>
+        {
+            try
+            {
+                return await fetch(event.request.clone())
+            }
+            catch (error)
+            {
+                await queue.pushRequest({request: event.request})
+                return error
+            }
+        }
+
+        event.respondWith(bgSyncLogic())
+    }
+})
