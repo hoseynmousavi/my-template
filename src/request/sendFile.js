@@ -1,8 +1,8 @@
 import axios from "axios"
-import requestErrorHandler from "./requestErrorHandler"
 import urlMaker from "./urlMaker"
+import errorHandler from "./errorHandler"
 
-function sendFile({url, data, progress, dontToast})
+function sendFile({dontToast, url, data, progress})
 {
     const token = localStorage.getItem("token")
     return axios(
@@ -19,7 +19,7 @@ function sendFile({url, data, progress, dontToast})
             if (progress) progress(100)
             return res.data
         })
-        .catch(err => requestErrorHandler({dontToast, err, callback: () => sendFile(arguments[0])}))
+        .catch(err => errorHandler({dontToast, err, callback: () => sendFile(arguments[0])}))
 }
 
 export default sendFile
