@@ -53,14 +53,14 @@ function get({url, param = "", dontToast, dontCache, cancel, useRefreshToken})
                 const output = res.data
                 if (onGoingReqs[reqUrl].count > 1) requestDataShareManager.dataShare({message: {status: "OK", dataReqUrl: reqUrl, data: output}})
                 delete onGoingReqs[reqUrl]
-                if (!dontCache) localStorage.setItem(url + "/" + param, JSON.stringify(output))
+                if (!dontCache) localStorage.setItem(reqUrl, JSON.stringify(output))
                 return output
             })
             .catch(err =>
             {
                 if (err.message === "Network Error" && !dontCache)
                 {
-                    const cacheData = localStorage.getItem(url + "/" + param)
+                    const cacheData = localStorage.getItem(reqUrl)
                     if (cacheData)
                     {
                         const output = JSON.parse(cacheData)
@@ -104,14 +104,14 @@ function post({url, data, param = "", progress, cache, cancel, dontToast, useRef
                 const output = res.data
                 if (onGoingReqs[reqUrl].count > 1) requestDataShareManager.dataShare({message: {status: "OK", dataReqUrl: reqUrl, data: output}})
                 delete onGoingReqs[reqUrl]
-                if (cache) localStorage.setItem(url + "/" + param, JSON.stringify(output))
+                if (cache) localStorage.setItem(reqUrl, JSON.stringify(output))
                 return output
             })
             .catch(err =>
             {
                 if (err.message === "Network Error" && cache)
                 {
-                    const cacheData = localStorage.getItem(url + "/" + param)
+                    const cacheData = localStorage.getItem(reqUrl)
                     if (cacheData)
                     {
                         const output = JSON.parse(cacheData)
