@@ -19,6 +19,7 @@
   font-family: my-font-bold, serif;
   font-size: var(--title-font);
   width: 100%;
+  overflow: hidden;
   user-select: none;
   pointer-events: all;
 
@@ -85,6 +86,8 @@
 }
 
 .toast-item-svg {
+  margin-right: -2px;
+  min-width: 20px;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -130,18 +133,20 @@
 }
 
 .toast-item-close-material {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: -10px;
+  margin-left: -4px;
   cursor: pointer;
 }
 
 .toast-item-close {
-  width: 25px;
-  height: 25px;
+  min-width: 120%;
+  width: 120%;
+  height: 120%;
   transform: rotate(45deg);
 }

@@ -11,6 +11,7 @@ function Toast({item: {message, type, onClick}, clearMe, location})
 {
     const {state: {theme}} = useContext(ThemeContext)
     const toastRef = useRef(null)
+    const toastMessageRef = useRef(null)
     const clearTimer = useRef(null)
     const unMountTimer = useRef(null)
     const didMountLocation = useRef(location)
@@ -18,7 +19,7 @@ function Toast({item: {message, type, onClick}, clearMe, location})
     useEffect(() =>
     {
         toastRef.current.style.transition = "height ease 0.1s, margin-bottom ease 0.1s, padding ease 0.1s, opacity ease 0.3s 0.1s"
-        toastRef.current.style.height = toastRef.current.scrollHeight + 32 + "px"
+        toastRef.current.style.height = toastMessageRef.current.scrollHeight + 32 + "px"
         toastRef.current.style.marginBottom = "15px"
         toastRef.current.style.padding = "16px 16px"
         toastRef.current.style.opacity = "1"
@@ -49,7 +50,7 @@ function Toast({item: {message, type, onClick}, clearMe, location})
 
     return (
         <div className={`toast-item ${theme === "dark" ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClick : clearItem}>
-            <div className="toast-item-message">
+            <div className="toast-item-message" ref={toastMessageRef}>
                 {
                     type === SUCCESS_TOAST ?
                         <CheckSvg className={`toast-item-svg success ${theme === "dark" ? "dark" : ""}`}/>
