@@ -1,18 +1,14 @@
-import {forwardRef, useEffect, useState} from "react"
+import {forwardRef, useEffect, useRef, useState} from "react"
 
 const ImageLoading = forwardRef(({className, style, src, alt, loading, onClick, draggable}, ref) =>
 {
-    const [isLoaded, setIsLoaded] = useState(false)
+    const img = useRef(new Image())
+    img.current.src = src
+    const [isLoaded, setIsLoaded] = useState(img.current.complete)
 
     useEffect(() =>
     {
-        if (src)
-        {
-            const img = new Image()
-            img.src = src
-            if (img.complete) setIsLoaded(true)
-            else img.onload = () => setIsLoaded(true)
-        }
+        if (src && !img.current.complete) img.onload = () => setIsLoaded(true)
         // eslint-disable-next-line
     }, [])
 
