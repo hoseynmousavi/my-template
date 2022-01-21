@@ -8,7 +8,7 @@ const ImageLoading = forwardRef(({className, style, src, alt, loading, onClick, 
 
     useEffect(() =>
     {
-        if (src && !img.current.complete) img.onload = () => setIsLoaded(true)
+        if (src && !img.current.complete) img.current.onload = () => setIsLoaded(true)
         // eslint-disable-next-line
     }, [])
 
