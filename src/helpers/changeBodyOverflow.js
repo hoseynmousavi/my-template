@@ -10,7 +10,7 @@ function changeBodyOverflow(makeHide)
         {
             isHide = true
             if (checkViewPort()) document.getElementById("root").style.overflowY = "hidden"
-            else document.body.style.overflowY = "hidden"
+            document.body.style.overflowY = "hidden"
         }
     }
     else
@@ -19,7 +19,7 @@ function changeBodyOverflow(makeHide)
         {
             isHide = false
             if (checkViewPort()) document.getElementById("root").style.removeProperty("overflow-y")
-            else document.body.style.removeProperty("overflow-y")
+            document.body.style.removeProperty("overflow-y")
         }
     }
 }
