@@ -17,9 +17,7 @@ sed -i "s~FULL_HEIGHT~$REACT_APP_FULL_HEIGHT~g" build/index.html
 sed -i "s~HEADER_HEIGHT~$REACT_APP_HEADER_HEIGHT~g" build/index.html
 sed -i "s~NAV_HEIGHT~$REACT_APP_NAV_HEIGHT~g" build/index.html
 sed -i "s~BTN_INPUT_HEIGHT~$REACT_APP_BTN_INPUT_HEIGHT~g" build/index.html
-sed -i "s~MOBILE_FIRST_GRID_PADDING~$REACT_APP_MOBILE_FIRST_GRID_PADDING~g" build/index.html
 sed -i "s~MOBILE_FIRST_SOLID_PADDING~$REACT_APP_MOBILE_FIRST_SOLID_PADDING~g" build/index.html
-sed -i "s~MOBILE_SECOND_GRID_PADDING~$REACT_APP_MOBILE_SECOND_GRID_PADDING~g" build/index.html
 sed -i "s~MOBILE_SECOND_SOLID_PADDING~$REACT_APP_MOBILE_SECOND_SOLID_PADDING~g" build/index.html
 sed -i "s~FIRST_LINE_HEIGHT~$REACT_APP_FIRST_LINE_HEIGHT~g" build/index.html
 sed -i "s~TOAST_Z_INDEX~$REACT_APP_TOAST_Z_INDEX~g" build/index.html
