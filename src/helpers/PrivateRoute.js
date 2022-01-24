@@ -7,19 +7,10 @@ import urlConstant from "../constant/urlConstant"
 function PrivateRoute({ifNotLogin, dontChange, path, render, ...props})
 {
     const {state: user} = useContext(AuthContext)
-
     return useMemo(() =>
     {
-        if (ifNotLogin)
-        {
-            if (!user) return <Route path={path} render={render} {...props}/>
-            else return <Redirect to={urlConstant.home}/>
-        }
-        else
-        {
-            if (user) return <Route path={path} render={render} {...props}/>
-            else return <Redirect to={urlConstant.login}/>
-        }
+        if (ifNotLogin ? !user : user) return <Route path={path} render={render} {...props}/>
+        else return <Redirect to={urlConstant[ifNotLogin ? "home" : "login"]}/>
         // eslint-disable-next-line
     }, dontChange ? [] : [user])
 }
