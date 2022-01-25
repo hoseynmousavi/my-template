@@ -1,5 +1,6 @@
 import themeManager from "./themeManager"
 import changeBodyOverflow from "./changeBodyOverflow"
+import goBack from "./goBack"
 
 function popOnPopState({key, callback, dontPush, dontChangeOverflow, statusBarColor})
 {
@@ -26,7 +27,7 @@ function popOnPopState({key, callback, dontPush, dontChangeOverflow, statusBarCo
 
     function onKeyDown(e)
     {
-        if (e.key === key) window.history.back()
+        if (e.key === key) goBack()
     }
 
     if (!dontPush) window.history.pushState("for-history", "", window.location.href)
