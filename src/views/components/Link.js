@@ -1,15 +1,18 @@
 import {memo} from "react"
 
-function Link({children, to, className, onClick, replace, style})
+function Link({children, to, href, className, onClick, replace, style, draggable = "false"})
 {
     const go = e =>
     {
-        e.preventDefault()
-        if (to) window.history[replace ? "replaceState" : "pushState"]("", "", to)
-        onClick && onClick(e)
+        if (to)
+        {
+            e.preventDefault()
+            window.history[replace ? "replaceState" : "pushState"]("", "", to)
+        }
+        if (onClick) onClick(e)
     }
 
-    return <a tabIndex="-1" href={to} style={style} onClick={go} className={className}>{children}</a>
+    return <a tabIndex="-1" href={to || href} style={style} draggable={draggable} onClick={go} className={className}>{children}</a>
 }
 
 export default memo(Link)
