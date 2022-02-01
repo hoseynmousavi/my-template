@@ -38,6 +38,8 @@ body {
   @media screen and (min-width: 1920px) {
     background-color: var(--solid-dark) !important;
     .index-temp {
+      display: inline-block;
+      width: 100%;
       background-color: var(--first-background-color);
       min-height: var(--full-height);
     }
