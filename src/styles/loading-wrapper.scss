@@ -1,0 +1,12 @@
+.loading-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fade-in-long ease 0.4s;
+  min-height: var(--full-height);
+
+  &.have-bg {
+    animation: none;
+    background-color: var(--first-background-color);
+  }
+}

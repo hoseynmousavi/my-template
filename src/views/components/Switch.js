@@ -1,37 +1,16 @@
-import React, {useEffect, useRef, useState} from "react"
-import checkViewPort from "../../helpers/checkViewPort"
-import Resize from "../../helpers/Resize"
+import {useEffect, useRef, useState} from "react"
+import SwitchItem from "./SwitchItem"
+import SwitchGesture from "../../helpers/SwitchGesture"
 
-function Switch({children})
+function Switch({children, isOuterSwitch})
 {
-    const [state, setState] = useState({showChildIndex: null, location: null})
-    const {showChildIndex, location} = state
-    const currentLocation = useRef(null)
-    const currentIndex = useRef(null)
+    const [state, setState] = useState([])
+    const stateRef = useRef([])
     const contRef = document.getElementById("outer-root")
-    const innerContRef = document.getElementById("root")
-    const {clientHeight, clientWidth} = Resize()
-    const root = clientHeight && checkViewPort() ? document.getElementById("root") : window
+    const {onTouchStart, onTouchMove, onTouchEnd} = SwitchGesture({stateRef})
 
     useEffect(() =>
     {
-        const scrolls = []
-
-        function getScroll(type)
-        {
-            let scroll = 0
-            if (type === "popstate")
-            {
-                if (scrolls.length > 0)
-                {
-                    scroll = scrolls[scrolls.length - 1]
-                    scrolls.pop()
-                }
-            }
-            else if (type === "pushstate") scrolls.push(root.scrollY || root.scrollY === 0 ? root.scrollY : root.scrollTop)
-            return scroll
-        }
-
         function getUrls()
         {
             if (children?.reduce)
@@ -55,24 +34,25 @@ function Switch({children})
             const urls = getUrls()
             const locationTemp = window.location.pathname
             const showChildIndexTemp = urls.indexOf(urls.filter(url => url && new RegExp(url).test(locationTemp))[0])
-            if (e?.target?.history?.state !== "for-history" && currentLocation.current !== locationTemp)
+            const {showChildIndex, location} = stateRef.current[stateRef.current.length - 1] || {}
+            if (e?.target?.history?.state !== "for-history" && location !== locationTemp)
             {
-                currentLocation.current = locationTemp
-                if (type === "initial" || currentIndex.current === showChildIndexTemp)
+                if (type === "initial")
                 {
-                    currentIndex.current = showChildIndexTemp
-                    setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                    setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: "initial"})
+                }
+                else if (showChildIndex === showChildIndexTemp)
+                {
+                    setStateFunc({type: "replacestate", showChildIndex: showChildIndexTemp, location: locationTemp})
                 }
                 else
                 {
-                    currentIndex.current = showChildIndexTemp
-                    const scroll = getScroll(type)
-                    if (clientWidth <= 480)
+                    if (window.innerWidth <= 480)
                     {
-                        if (type === "popstate") mobileBack(showChildIndexTemp, locationTemp, scroll)
-                        else mobileForward(showChildIndexTemp, locationTemp, scroll)
+                        if (type === "popstate") mobileBack(showChildIndexTemp, locationTemp, type)
+                        else mobileForward(showChildIndexTemp, locationTemp, type)
                     }
-                    else desktopRoute(showChildIndexTemp, locationTemp, scroll)
+                    else desktopRoute(showChildIndexTemp, locationTemp, type)
                 }
             }
         }
@@ -92,144 +72,257 @@ function Switch({children})
         // eslint-disable-next-line
     }, [])
 
-    function desktopRoute(showChildIndexTemp, locationTemp, scroll)
+    function desktopRoute(showChildIndexTemp, locationTemp, type)
     {
         if (contRef.animate)
         {
             contRef.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 350, easing: "ease-in"})
             setTimeout(() =>
             {
-                setState({showChildIndex: showChildIndexTemp, location: locationTemp})
+                const delta = getDelta({showChildIndexTemp})
+                setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
+                setTimeout(() =>
+                {
+                    const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
+                    if (nextPage)
+                    {
+                        nextPage.style.opacity = `1`
+                        nextPage.style.contentVisibility = `visible`
+                    }
+                    if (type === "pushstate")
+                    {
+                        const prePage = document.getElementById(stateRef.current[stateRef.current.length - 2].id)
+                        if (prePage)
+                        {
+                            prePage.style.opacity = `0`
+                            prePage.style.contentVisibility = `hidden`
+                        }
+                    }
+                }, 0)
                 contRef.animate([{opacity: 0}, {opacity: 1}], {duration: 175, easing: "ease-out"})
-                setTimeout(() => root.scrollTo({top: scroll}), 0)
             }, 195)
         }
         else
         {
-            setState({showChildIndex: showChildIndexTemp, location: locationTemp})
-            root.scrollTo({top: scroll})
+            const delta = getDelta({showChildIndexTemp})
+            setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
         }
     }
 
-    function mobileForward(showChildIndexTemp, locationTemp, scroll)
+    function mobileForward(showChildIndexTemp, locationTemp, type)
     {
-        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, scroll)
+        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, type)
         else
         {
-            let translate = 0
-            let step = 1
-            addProperties()
-
-            function hide()
+            if (type === "pushstate")
             {
-                translate = translate + step <= 30 ? translate + step : 30
-                step = translate + step + 1 <= 30 ? step + 1 : step
-                contRef.style.transform = `translate3d(${translate}%, 0, 0)`
-                contRef.style.opacity = `${0.9 - (translate / 30)}`
-                if (translate < 30) window.requestAnimationFrame(hide)
-                else
+                setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId()})
+                setTimeout(() =>
                 {
-                    setState({showChildIndex: showChildIndexTemp, location: locationTemp})
-                    setTimeout(() => window.requestAnimationFrame(showNext), 150)
-                }
-            }
+                    const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
+                    const prePage = document.getElementById(stateRef.current[stateRef.current.length - 2].id)
 
-            let secondTranslate = -30
+                    nextPage.style.transform = `translate3d(100%, 0, 0)`
+                    nextPage.style.opacity = `1`
+                    nextPage.style.contentVisibility = `visible`
 
-            function showNext()
-            {
-                secondTranslate = secondTranslate + step <= 0 ? secondTranslate + step : 0
-                step = step - 1 >= 1 ? step - 1 : 1
-                contRef.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
-                contRef.style.opacity = `${1 + (secondTranslate / 30)}`
-                if (secondTranslate < 0) window.requestAnimationFrame(showNext)
-                else removeProperties(scroll)
-            }
+                    let translatePre = 0
+                    let stepPre = 4
+                    let translateNext = 100
+                    let stepNext = 7
 
-            window.requestAnimationFrame(hide)
-        }
-    }
-
-    function mobileBack(showChildIndexTemp, locationTemp, scroll)
-    {
-        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, scroll)
-        else
-        {
-            let translate = 0
-            let step = 1
-            addProperties()
-
-            function hide()
-            {
-                translate = translate - step >= -30 ? translate - step : -30
-                step = translate - step + 1 >= -30 ? step + 1 : step
-                contRef.style.transform = `translate3d(${translate}%, 0, 0)`
-                contRef.style.opacity = `${0.9 + (translate / 30)}`
-                if (translate > -30) window.requestAnimationFrame(hide)
-                else
-                {
-                    setState({showChildIndex: showChildIndexTemp, location: locationTemp})
-                    setTimeout(() =>
+                    function anime()
                     {
-                        innerContRef.scrollTo({top: scroll})
-                        window.requestAnimationFrame(showNext)
-                    }, 150)
-                }
+                        translatePre = translatePre - stepPre > -100 ? translatePre - stepPre : -100
+                        translateNext = translateNext - stepNext > 0 ? translateNext - stepNext : 0
+                        nextPage.style.transform = `translate3d(${translateNext}%, 0, 0)`
+                        prePage.style.transform = `translate3d(${translatePre}%, 0, 0)`
+                        if (translateNext > 0) window.requestAnimationFrame(anime)
+                        else
+                        {
+                            nextPage.style.removeProperty("transform")
+                            prePage.style.removeProperty("transform")
+                            prePage.style.opacity = `0`
+                            prePage.style.contentVisibility = `hidden`
+                        }
+                    }
+
+                    window.requestAnimationFrame(anime)
+                }, 0)
             }
-
-            let secondTranslate = 30
-
-            function showNext()
+            else
             {
-                secondTranslate = secondTranslate - step >= 0 ? secondTranslate - step : 0
-                step = step - 1 >= 1 ? step - 1 : 1
-                contRef.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
-                contRef.style.opacity = `${1 - (secondTranslate / 30)}`
-                if (secondTranslate > 0) window.requestAnimationFrame(showNext)
-                else removeProperties(scroll)
+                let translate = 0
+                let step = 1
+
+                function hide()
+                {
+                    translate = translate + step <= 30 ? translate + step : 30
+                    step = translate + step + 1 <= 30 ? step + 1 : step
+                    contRef.style.transform = `translate3d(${translate}%, 0, 0)`
+                    contRef.style.opacity = `${0.9 - (translate / 30)}`
+                    if (translate < 30) window.requestAnimationFrame(hide)
+                    else
+                    {
+                        setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId()})
+                        setTimeout(() =>
+                        {
+                            const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
+                            if (nextPage)
+                            {
+                                nextPage.style.opacity = `1`
+                                nextPage.style.contentVisibility = `visible`
+                            }
+                            window.requestAnimationFrame(showNext)
+                        }, 150)
+                    }
+                }
+
+                let secondTranslate = -30
+
+                function showNext()
+                {
+                    secondTranslate = secondTranslate + step <= 0 ? secondTranslate + step : 0
+                    step = step - 1 >= 1 ? step - 1 : 1
+                    contRef.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
+                    contRef.style.opacity = `${1 + (secondTranslate / 30)}`
+                    if (secondTranslate < 0) window.requestAnimationFrame(showNext)
+                    else contRef.style.removeProperty("transform")
+                }
+
+                window.requestAnimationFrame(hide)
+            }
+        }
+    }
+
+    function mobileBack(showChildIndexTemp, locationTemp, type)
+    {
+        if (typeof requestAnimationFrame === "undefined") desktopRoute(showChildIndexTemp, locationTemp, type)
+        else
+        {
+            function doTheJob()
+            {
+                const delta = getDelta({showChildIndexTemp})
+
+                const nextPage = document.getElementById(stateRef.current[stateRef.current.length - (1 + delta)].id)
+                const prePage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
+
+                const next = nextPage.style.transform ? +(nextPage.style.transform.replace("translate3d(", "").replace("px, 0px, 0px)", "")) / window.innerWidth * 100 : null
+                const pre = prePage.style.transform ? +(prePage.style.transform.replace("translate3d(", "").replace("px, 0px, 0px)", "")) / window.innerWidth * 100 : null
+                nextPage.style.transform = next ? `translate3d(${next}%, 0, 0)` : `translate3d(-60%, 0, 0)`
+                nextPage.style.opacity = `1`
+                nextPage.style.contentVisibility = `visible`
+
+                let translatePre = pre || 0
+                let stepPre = 7
+                let translateNext = next || -60
+                let stepNext = 4
+
+                function anime()
+                {
+                    translatePre = translatePre + stepPre < 100 ? translatePre + stepPre : 100
+                    translateNext = translateNext + stepNext < 0 ? translateNext + stepNext : 0
+                    nextPage.style.transform = `translate3d(${translateNext}%, 0, 0)`
+                    prePage.style.transform = `translate3d(${translatePre}%, 0, 0)`
+                    if (translateNext < 0) window.requestAnimationFrame(anime)
+                    else
+                    {
+                        nextPage.style.removeProperty("transform")
+                        setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, delta})
+                    }
+                }
+
+                window.requestAnimationFrame(anime)
             }
 
-            window.requestAnimationFrame(hide)
+            if (stateRef.current.length >= 2) doTheJob()
+            else
+            {
+                setStateFunc({showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId()})
+                setTimeout(doTheJob, 0)
+            }
         }
     }
 
-    function addProperties()
+    function getDelta({showChildIndexTemp})
     {
-        contRef.style.willChange = "transform, opacity"
-        innerContRef.className = "hide-scroll"
-        if (!checkViewPort())
+        let delta = 1
+        for (let i = stateRef.current.length - 1; i--; i >= 0)
         {
-            const top = root.scrollY || root.scrollY === 0 ? root.scrollY : root.scrollTop
-            innerContRef.style.maxHeight = clientHeight + "px"
-            innerContRef.style.overflowY = "auto"
-            innerContRef.style.overflowX = "hidden"
-            innerContRef.scrollTo({top})
+            if (stateRef.current[i].showChildIndex === showChildIndexTemp)
+            {
+                delta = (stateRef.current.length - 1) - i
+                break
+            }
         }
+        return delta
     }
 
-    function removeProperties(scroll)
+    function setStateFunc({type, showChildIndex, location, id, delta})
     {
-        contRef.style.removeProperty("will-change")
-        contRef.style.removeProperty("opacity")
-        contRef.style.removeProperty("transform")
-        innerContRef.className = ""
-        if (!checkViewPort())
+        if (type === "initial")
         {
-            innerContRef.style.removeProperty("max-height")
-            innerContRef.style.removeProperty("overflow-y")
-            innerContRef.style.removeProperty("overflow-x")
-            root.scrollTo({top: scroll})
+            const res = [{showChildIndex, location, id}]
+            setState(res)
+            stateRef.current = res
+        }
+        else if (type === "replacestate")
+        {
+            const lastItemRef = stateRef.current[stateRef.current.length - 1]
+            stateRef.current = [...stateRef.current.slice(0, stateRef.current.length - 1), {...lastItemRef, showChildIndex, location, ...(id ? {id} : {})}]
+            setState(prevState =>
+            {
+                const lastItem = prevState[prevState.length - 1]
+                return [...prevState.slice(0, prevState.length - 1), {...lastItem, showChildIndex, location, ...(id ? {id} : {})}]
+            })
+        }
+        else if (type === "pushstate")
+        {
+            stateRef.current = [...stateRef.current, {showChildIndex, location, id}]
+            setState(prevState => [...prevState, {showChildIndex, location, id}])
+        }
+        else if (type === "popstate")
+        {
+            const lastItemRef = stateRef.current[stateRef.current.length - (delta + 1)]
+            stateRef.current = [...stateRef.current.slice(0, stateRef.current.length - (delta + 1)), {...lastItemRef, showChildIndex, location}]
+            setState(prevState =>
+            {
+                const lastItem = prevState[prevState.length - (delta + 1)]
+                return [...prevState.slice(0, prevState.length - (delta + 1)), {...lastItem, showChildIndex, location}]
+            })
+        }
+        else
+        {
+            stateRef.current = [{showChildIndex, location, id}, ...stateRef.current]
+            setState(prevState => [{showChildIndex, location, id}, ...prevState])
         }
     }
 
-    const childrenWithProps = React.Children.map(children, child =>
+    function generateId()
     {
-        if (React.isValidElement(child)) return React.cloneElement(child, {location})
-        else if (!child) return ""
-        else return child
+        return (Math.random() + 1).toString(36).substring(7)
+    }
+
+    return state.map((item, index) =>
+    {
+        const {showChildIndex, location, id} = item
+        if (children[showChildIndex])
+        {
+            return <SwitchItem key={id}
+                               showChildIndex={showChildIndex}
+                               location={location}
+                               children={children}
+                               index={index}
+                               stateLength={state.length}
+                               isOuterSwitch={isOuterSwitch}
+                               id={id}
+                               onTouchStart={onTouchStart}
+                               onTouchMove={onTouchMove}
+                               onTouchEnd={onTouchEnd}
+            />
+        }
+        else return null
     })
-
-    return (showChildIndex || showChildIndex === 0) && childrenWithProps[showChildIndex] ? childrenWithProps[showChildIndex] : null
 }
 
 export default Switch

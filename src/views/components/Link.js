@@ -9,7 +9,7 @@ function Link({children, to, href, className, onClick, replace, style, draggable
             e.preventDefault()
             window.history[replace ? "replaceState" : "pushState"]("", "", to)
         }
-        if (onClick) onClick(e)
+        onClick?.(e)
     }
 
     return <a tabIndex="-1" href={to || href} style={style} draggable={draggable} onClick={go} className={className}>{children}</a>

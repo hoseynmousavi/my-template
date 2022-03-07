@@ -6,7 +6,7 @@ function Route({location, path, render})
 
     useEffect(() =>
     {
-        function calcParams(location)
+        function checkParams()
         {
             let tempParams = {}
             const pathSections = path.match(/\/(:?)((\w|\.|-)+)/g)
@@ -17,16 +17,16 @@ function Route({location, path, render})
                 {
                     if (item && pathnameSections[index]) tempParams[item.replace(/\/(:?)/g, "")] = pathnameSections[index].replace(/\//g, "")
                 })
-                setParams(tempParams)
+                return tempParams
             }
-            else setParams(tempParams)
+            else return tempParams
         }
 
-        calcParams(location)
+        setParams(checkParams())
     }, [location, path])
 
-    if (params) return <React.Fragment key={path}>{render({location: {pathname: location}, match: {params, path}})}</React.Fragment>
-    else return null
+    if (params === null) return null
+    else return <React.Fragment key={path}>{render({location: {pathname: location}, match: {params, path}})}</React.Fragment>
 }
 
 export default memo(Route)

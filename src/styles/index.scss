@@ -1,4 +1,6 @@
 @import "mixin";
+@import "switch";
+@import "loading-wrapper";
 @import "image-loading";
 @import "image-show";
 @import "my-toast";
@@ -21,8 +23,7 @@
 }
 
 body {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   scrollbar-width: thin;
   direction: rtl;
   padding: 0;
@@ -46,21 +47,18 @@ body {
   }
 }
 
-.body-ios {
-  overflow-y: hidden;
-
-  #outer-root {
-    @include change-view;
-  }
-}
-
 #outer-root {
   max-width: var(--desktop-viewport);
   margin: 0 auto;
+  transform: translate(0, 0);
+  overflow: hidden;
+  height: var(--full-height);
+}
 
-  @media screen and (min-width: 1920px) {
-    @include change-view;
-  }
+#root {
+  scrollbar-width: thin;
+  height: 100%;
+  overflow: hidden;
 }
 
 button, a, input, textarea, h4, h3, h2, h1, select, video, p, track, label, div, header, main, footer, section, svg, img, span {

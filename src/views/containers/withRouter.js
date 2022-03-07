@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react"
-import isIos from "../../helpers/isIos"
 
 function withRouter(WrappedComponent)
 {
@@ -38,8 +37,6 @@ function withRouter(WrappedComponent)
                     window.dispatchEvent(event)
                 }
             }
-
-            if (isIos()) document.body.className = "body-ios"
         }, [])
 
         const setIndex = () => setLocation(window.location.pathname)
