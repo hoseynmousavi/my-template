@@ -50,7 +50,7 @@ body {
 #outer-root {
   max-width: var(--desktop-viewport);
   margin: 0 auto;
-  transform: translate(0, 0);
+  transform: translate3d(0, 0, 0);
   overflow: hidden;
   height: var(--full-height);
 }
