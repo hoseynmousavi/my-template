@@ -84,12 +84,12 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
 
     function closeImage()
     {
-        removeResize.current && removeResize.current()
+        removeResize.current?.()
         setShowPicture(false)
         const rect = imgRef.current.getBoundingClientRect()
         const copyImage = document.getElementById("picture")
         const backGround = document.getElementById("backGround")
-        backGround.className = "back-cont hide"
+        backGround.className = "back-cont hide dont-gesture"
         copyImage.style.top = rect.top + "px"
         copyImage.style.height = rect.height + "px"
         copyImage.style.width = rect.width + "px"
