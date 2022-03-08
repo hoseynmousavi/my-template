@@ -16,7 +16,7 @@ function SwitchGesture({stateRef})
 
     function onTouchStart(e)
     {
-        if (!checkParentClass(e.target, "dont-gesture"))
+        if (typeof requestAnimationFrame !== "undefined" || !checkParentClass(e.target, "dont-gesture"))
         {
             posX.current = e.touches?.[0].clientX || e.clientX
             posY.current = e.touches?.[0].clientY || e.clientY
