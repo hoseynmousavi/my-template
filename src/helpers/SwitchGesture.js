@@ -46,13 +46,8 @@ function SwitchGesture({stateRef})
                 nextPage.style.opacity = `1`
                 nextPage.style.contentVisibility = `visible`
 
-                function translate()
-                {
-                    prePage.style.transform = `translate3d(${translatePre.current}px,0,0)`
-                    nextPage.style.transform = `translate3d(${translateNext.current}px,0,0)`
-                }
-
-                window.requestAnimationFrame(translate)
+                prePage.style.transform = `translate3d(${translatePre.current}px,0,0)`
+                nextPage.style.transform = `translate3d(${translateNext.current}px,0,0)`
             }
         }
         started.current = false

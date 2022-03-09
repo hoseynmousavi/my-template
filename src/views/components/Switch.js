@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from "react"
 import SwitchItem from "./SwitchItem"
 import SwitchGesture from "../../helpers/SwitchGesture"
+import parseTranslateX from "../../helpers/parseTranslateX"
 
 function Switch({children, isOuterSwitch})
 {
@@ -207,15 +208,16 @@ function Switch({children, isOuterSwitch})
                 const nextPage = document.getElementById(stateRef.current[stateRef.current.length - (1 + delta)].id)
                 const prePage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
 
-                const next = nextPage.style.transform ? +(nextPage.style.transform.replace("translate3d(", "").replace("px, 0px, 0px)", "")) / window.innerWidth * 100 : null
-                const pre = prePage.style.transform ? +(prePage.style.transform.replace("translate3d(", "").replace("px, 0px, 0px)", "")) / window.innerWidth * 100 : null
-                nextPage.style.transform = next ? `translate3d(${next}%, 0, 0)` : `translate3d(-60%, 0, 0)`
+                const next = parseTranslateX({transform: nextPage.style.transform, fallback: -60})
+                const pre = parseTranslateX({transform: prePage.style.transform, fallback: 0})
+
+                nextPage.style.transform = `translate3d(${next}%, 0, 0)`
                 nextPage.style.opacity = `1`
                 nextPage.style.contentVisibility = `visible`
 
-                let translatePre = pre || 0
+                let translatePre = pre
                 let stepPre = 7
-                let translateNext = next || -60
+                let translateNext = next
                 let stepNext = 4
 
                 function anime()
