@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react"
+import blockIosSwipe from "../../helpers/blockIosSwipe"
 
 function withRouter(WrappedComponent)
 {
@@ -37,6 +38,8 @@ function withRouter(WrappedComponent)
                     window.dispatchEvent(event)
                 }
             }
+
+            blockIosSwipe()
         }, [])
 
         const setIndex = () => setLocation(window.location.pathname)

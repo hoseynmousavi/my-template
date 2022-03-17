@@ -1,32 +1,20 @@
-import {useEffect, useRef, useState} from "react"
+import React, {useEffect, useRef, useState} from "react"
 import SwitchItem from "./SwitchItem"
 import SwitchGesture from "../../helpers/SwitchGesture"
 import parseTranslateX from "../../helpers/parseTranslateX"
 
-function Switch({children, isOuterSwitch})
+function Switch({children, isAuth, isTab, tabClassName})
 {
     const [state, setState] = useState([])
     const stateRef = useRef([])
-    const contRef = document.getElementById("outer-root")
+    const contRef = useRef(isTab ? null : document.getElementById("outer-root"))
     const {onTouchStart, onTouchMove, onTouchEnd} = SwitchGesture({stateRef})
 
     useEffect(() =>
     {
         function getUrls()
         {
-            if (children?.reduce)
-            {
-                return children.reduce((sum, item) =>
-                {
-                    if (item?.props?.path) return [...sum, item.props.path === "*" ? ".*" : item.props.exact ? `^${item.props.path}$` : `^${item.props.path.replace(/:\w+/g, ".*")}`]
-                    else return [...sum, false]
-                }, [])
-            }
-            else if (children?.props?.path)
-            {
-                return [children.props.path === "*" ? ".*" : children.props.exact ? `^${children.props.path}$` : children.props.path.replace(/:\w+/g, ".*")]
-            }
-            else return [false]
+            return children.reduce((sum, item) => item?.props?.path ? [...sum, item.props.path === "*" ? ".*" : item.props.exact ? `^${item.props.path}(\\/?)$` : `^${item.props.path.replace(/:\w+/g, ".*")}`] : [...sum, false], [])
         }
 
         function changeRoute(e)
@@ -48,7 +36,7 @@ function Switch({children, isOuterSwitch})
                 }
                 else
                 {
-                    if (window.innerWidth <= 480)
+                    if (window.innerWidth <= 480 && !isTab)
                     {
                         if (type === "popstate") mobileBack(showChildIndexTemp, locationTemp, type)
                         else mobileForward(showChildIndexTemp, locationTemp, type)
@@ -75,12 +63,13 @@ function Switch({children, isOuterSwitch})
 
     function desktopRoute(showChildIndexTemp, locationTemp, type)
     {
-        if (contRef.animate)
+        const delta = getDelta({showChildIndexTemp})
+
+        if (contRef.current.animate)
         {
-            contRef.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 350, easing: "ease-in"})
+            contRef.current.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 350, easing: "ease-in"})
             setTimeout(() =>
             {
-                const delta = getDelta({showChildIndexTemp})
                 setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
                 setTimeout(() =>
                 {
@@ -100,14 +89,10 @@ function Switch({children, isOuterSwitch})
                         }
                     }
                 }, 0)
-                contRef.animate([{opacity: 0}, {opacity: 1}], {duration: 175, easing: "ease-out"})
+                contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 175, easing: "ease-out"})
             }, 195)
         }
-        else
-        {
-            const delta = getDelta({showChildIndexTemp})
-            setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
-        }
+        else setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
     }
 
     function mobileForward(showChildIndexTemp, locationTemp, type)
@@ -160,8 +145,8 @@ function Switch({children, isOuterSwitch})
                 {
                     translate = translate + step <= 30 ? translate + step : 30
                     step = translate + step + 1 <= 30 ? step + 1 : step
-                    contRef.style.transform = `translate3d(${translate}%, 0, 0)`
-                    contRef.style.opacity = `${0.9 - (translate / 30)}`
+                    contRef.current.style.transform = `translate3d(${translate}%, 0, 0)`
+                    contRef.current.style.opacity = `${0.9 - (translate / 30)}`
                     if (translate < 30) window.requestAnimationFrame(hide)
                     else
                     {
@@ -185,10 +170,14 @@ function Switch({children, isOuterSwitch})
                 {
                     secondTranslate = secondTranslate + step <= 0 ? secondTranslate + step : 0
                     step = step - 1 >= 1 ? step - 1 : 1
-                    contRef.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
-                    contRef.style.opacity = `${1 + (secondTranslate / 30)}`
+                    contRef.current.style.transform = `translate3d(${secondTranslate}%, 0, 0)`
+                    contRef.current.style.opacity = `${1 + (secondTranslate / 30)}`
                     if (secondTranslate < 0) window.requestAnimationFrame(showNext)
-                    else contRef.style.removeProperty("transform")
+                    else
+                    {
+                        contRef.current.style.removeProperty("transform")
+                        contRef.current.style.removeProperty("opacity")
+                    }
                 }
 
                 window.requestAnimationFrame(hide)
@@ -306,7 +295,7 @@ function Switch({children, isOuterSwitch})
         return (Math.random() + 1).toString(36).substring(7)
     }
 
-    return state.map((item, index) =>
+    const output = state.map((item, index) =>
     {
         const {showChildIndex, location, id} = item
         if (children[showChildIndex])
@@ -317,7 +306,7 @@ function Switch({children, isOuterSwitch})
                                children={children}
                                index={index}
                                stateLength={state.length}
-                               isOuterSwitch={isOuterSwitch}
+                               isAuth={isAuth}
                                id={id}
                                onTouchStart={onTouchStart}
                                onTouchMove={onTouchMove}
@@ -326,6 +315,9 @@ function Switch({children, isOuterSwitch})
         }
         else return null
     })
+
+    if (isTab) return <div className={tabClassName} ref={contRef}>{output}</div>
+    else return output
 }
 
 export default Switch

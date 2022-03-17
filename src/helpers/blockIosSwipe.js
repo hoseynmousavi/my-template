@@ -1,9 +1,8 @@
 import isIos from "./isIos"
-import isSafari from "./isSafari"
 
 function blockIosSwipe()
 {
-    if (isIos() && isSafari())
+    if (isIos())
     {
         document.getElementById("root").ontouchstart = e =>
         {
