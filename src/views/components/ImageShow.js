@@ -20,6 +20,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
         removeResize.current = onResize({callback: () => setImgPosition(copyImage)})
         const rect = imgRef.current.getBoundingClientRect()
         copyImage.id = "picture"
+        copyImage.src = src
         copyImage.style.animation = "none"
         copyImage.style.margin = "0"
         copyImage.style.maxHeight = "initial"
