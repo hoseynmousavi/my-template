@@ -2,7 +2,10 @@
 rm build/*.js.map
 rm build/static/js/*.map
 rm build/static/css/*.map
+gzip -r build/static/js
+gzip -r build/static/css
 source .env
+source .env.local
 sed -i "s~NAME~$REACT_APP_NAME~g" build/manifest.json
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/manifest.json
 sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/manifest.json
@@ -59,5 +62,4 @@ sed -i "s~TITLE_FONT~$REACT_APP_TITLE_FONT~g" build/index.html
 sed -i "s~LARGE_FONT~$REACT_APP_LARGE_FONT~g" build/index.html
 sed -i "s~BIG_FONT~$REACT_APP_BIG_FONT~g" build/index.html
 sed -i "s~HUGE_FONT~$REACT_APP_HUGE_FONT~g" build/index.html
-#curl -X DELETE -H "Accept:application/json" -H "Authorization: $REACT_APP_ARVAN_KEY" -H "Accept-Language:fa" "https://napi.arvancloud.com/cdn/4.0/domains/$REACT_APP_MAIN_URL/caching?purge=all" -I
 echo "VARIABLES SET SUCCESSFULLY"
