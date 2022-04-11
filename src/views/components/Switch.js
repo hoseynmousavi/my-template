@@ -219,7 +219,6 @@ function Switch({children, isAuth, isTab, tabClassName})
                     else
                     {
                         nextPage.style.removeProperty("transform")
-                        prePage.style.removeProperty("transform")
                         setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, delta})
                     }
                 }
