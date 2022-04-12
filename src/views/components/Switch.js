@@ -7,7 +7,7 @@ function Switch({children, isAuth, isTab, tabClassName})
 {
     const [state, setState] = useState([])
     const stateRef = useRef([])
-    const contRef = useRef(isTab ? null : document.getElementById("outer-root"))
+    const contRef = useRef(isTab ? null : document.getElementById("root"))
     const {onTouchStart, onTouchMove, onTouchEnd} = SwitchGesture({stateRef})
 
     useEffect(() =>

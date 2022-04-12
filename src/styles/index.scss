@@ -24,7 +24,6 @@
 
 body {
   overflow: hidden;
-  scrollbar-width: thin;
   direction: rtl;
   padding: 0;
   margin: 0;
@@ -36,7 +35,7 @@ body {
   overscroll-behavior-y: contain;
   -webkit-font-smoothing: antialiased;
 
-  @media screen and (min-width: 1920px) {
+  @media screen and (min-width: 450px) {
     background-color: var(--solid-dark) !important;
     .index-temp {
       display: inline-block;
@@ -47,18 +46,12 @@ body {
   }
 }
 
-#outer-root {
+#root {
+  transform: translate3d(0, 0, 0);
   max-width: var(--desktop-viewport);
   margin: 0 auto;
-  transform: translate3d(0, 0, 0);
   overflow: hidden;
   height: var(--full-height);
-}
-
-#root {
-  scrollbar-width: thin;
-  height: 100%;
-  overflow: hidden;
 }
 
 button, a, input, textarea, h4, h3, h2, h1, select, video, p, track, label, div, header, main, footer, section, svg, img, span {
