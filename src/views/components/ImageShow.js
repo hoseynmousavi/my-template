@@ -1,13 +1,12 @@
-import {Helmet} from "react-helmet"
-import {useRef, useState, memo} from "react"
+import {memo, useRef} from "react"
 import popOnPopState from "../../helpers/popOnPopState"
 import goBack from "../../helpers/goBack"
 import onResize from "../../helpers/onResize"
 import ImageLoading from "./ImageLoading"
+import changeViewport from "../../helpers/changeViewport"
 
 function ImageShow({className, src, alt = "", loading = "lazy", draggable = "false", style, zoomable, onClick})
 {
-    const [showPicture, setShowPicture] = useState(false)
     const imgRef = useRef(null)
     const removeResize = useRef(null)
 
@@ -15,7 +14,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     {
         e.stopPropagation()
         popOnPopState({key: "Escape", callback: closeImage})
-        setShowPicture(true)
+        changeViewport({zoomable: true})
         const copyImage = imgRef.current.cloneNode(true)
         removeResize.current = onResize({callback: () => setImgPosition(copyImage)})
         const rect = imgRef.current.getBoundingClientRect()
@@ -86,7 +85,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     function closeImage()
     {
         removeResize.current?.()
-        setShowPicture(false)
+        changeViewport({zoomable: false})
         const rect = imgRef.current.getBoundingClientRect()
         const copyImage = document.getElementById("picture")
         const backGround = document.getElementById("backGround")
@@ -106,17 +105,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
         }, 200)
     }
 
-    return (
-        <>
-            <ImageLoading key={src} className={className} style={style} loading={loading} ref={imgRef} src={src} alt={alt} draggable={draggable} onClick={zoomable ? openImage : onClick ? onClick : undefined}/>
-            {
-                showPicture &&
-                <Helmet>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes"/>
-                </Helmet>
-            }
-        </>
-    )
+    return <ImageLoading key={src} className={className} style={style} loading={loading} ref={imgRef} src={src} alt={alt} draggable={draggable} onClick={zoomable ? openImage : onClick ? onClick : undefined}/>
 }
 
 export default memo(ImageShow)
