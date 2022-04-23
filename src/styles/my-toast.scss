@@ -16,7 +16,6 @@
   align-items: center;
   color: var(--toast-success-text);
   border-radius: var(--second-radius);
-  font-family: my-font-bold, serif;
   font-size: var(--title-font);
   width: 100%;
   overflow: hidden;
@@ -29,6 +28,7 @@
 
     .toast-item-close {
       fill: var(--toast-success-text);
+      stroke: var(--toast-success-text);
     }
   }
 
@@ -38,6 +38,7 @@
 
     .toast-item-close {
       fill: var(--toast-info-text);
+      stroke: var(--toast-info-text);
     }
   }
 
@@ -47,6 +48,7 @@
 
     .toast-item-close {
       fill: var(--toast-fail-text);
+      stroke: var(--toast-fail-text);
     }
   }
 
@@ -57,6 +59,7 @@
 
       .toast-item-close {
         fill: var(--solid-light);
+        stroke: var(--solid-light);
       }
     }
 
@@ -66,6 +69,7 @@
 
       .toast-item-close {
         fill: var(--solid-light);
+        stroke: var(--solid-light);
       }
     }
 
@@ -75,6 +79,7 @@
 
       .toast-item-close {
         fill: var(--solid-light);
+        stroke: var(--solid-light);
       }
     }
   }
@@ -149,4 +154,27 @@
   width: 120%;
   height: 120%;
   transform: rotate(45deg);
+
+  &.undo {
+    width: 12px;
+    min-width: 12px;
+    height: 12px;
+    margin-left: 8px;
+    transform: none;
+  }
+}
+
+.toast-item-undo-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  border-radius: var(--first-radius);
+  margin-left: -10px;
+  width: 100px;
+  min-width: 100px;
+  cursor: pointer;
+}
+
+.toast-item-undo-text {
+  font-family: "my-font-bold", serif;
 }

@@ -1,0 +1,56 @@
+.timer-cont {
+  min-width: 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
+.timer-text {
+  position: absolute;
+  width: 60%;
+  height: 60%;
+  top: 29%;
+  left: 20%;
+  right: 20%;
+  bottom: 18%;
+  font-size: var(--small-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer {
+  width: 121%;
+  height: 121%;
+  display: block;
+  margin: -10.5% -10.5% 0 0;
+  transform-origin: center center;
+  transform: rotate(-90deg);
+}
+
+.timer-path {
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  transition: all ease 0.2s;
+
+  &.transparent {
+    opacity: 0.3;
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}

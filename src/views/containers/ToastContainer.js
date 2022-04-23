@@ -14,10 +14,10 @@ function ToastContainer({location})
 
         function onToast(event)
         {
-            const {message, type = INFO_TOAST} = event.detail
+            const {message, type = INFO_TOAST, onClick, isUndo} = event.detail
             setActiveToasts(activeToasts =>
                 activeToasts.every(item => item.message !== message) ?
-                    [{message, type}, ...activeToasts]
+                    [{message, type, onClick, isUndo}, ...activeToasts]
                     :
                     activeToasts,
             )

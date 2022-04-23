@@ -19,8 +19,8 @@ function reducer(state, action)
     {
         case TOGGLE_THEME:
         {
-            const {theme} = action.payload
-            localStorage.setItem("theme", theme === "dark" ? "dark" : "light")
+            const {theme, save} = action.payload
+            if (save) localStorage.setItem("theme", theme === "dark" ? "dark" : "light")
             return {
                 ...state,
                 theme,
@@ -43,7 +43,10 @@ function ThemeProvider({children})
         setCssVariables()
         themeManager.configTheme()
         const theme = localStorage.getItem("theme")
-        if (theme === "dark" || (!theme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)) ThemeActions.changeTheme({theme: "dark", dispatch})
+        if (theme === "dark" || (!theme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches))
+        {
+            ThemeActions.changeTheme({theme: "dark", save: false, dispatch})
+        }
     }, [])
 
     return (
