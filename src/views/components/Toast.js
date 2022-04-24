@@ -38,7 +38,7 @@ function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
                 if (isUndo)
                 {
                     const start = new Date()
-                    timerInterval.current = setInterval(() => setTimerRemain(Math.max(0, Math.floor(timerInMili + start - new Date()))), 10)
+                    timerInterval.current = setInterval(() => setTimerRemain(Math.max(0, Math.floor(timerInMili + (start - new Date())))), 10)
                 }
                 unMountTimer.current = setTimeout(clearItem, timerInMili)
             }
