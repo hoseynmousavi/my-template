@@ -9,6 +9,7 @@ const toastConstant = {
 
     tokenExpired: "ورود شما منقضی شده است، دوباره وارد شوید.",
     requestCancel: "req_canceled",
+    timerInSecond: 5,
 }
 
 export default toastConstant

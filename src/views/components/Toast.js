@@ -1,19 +1,20 @@
-import {useContext, useLayoutEffect, useRef, useState} from "react"
+import {useLayoutEffect, useRef, useState} from "react"
 import PlusSvg from "../../media/svg/PlusSvg"
 import Material from "./Material"
 import CheckSvg from "../../media/svg/CheckSvg"
 import InfoSvg from "../../media/svg/InfoSvg"
 import CloseSvg from "../../media/svg/CloseSvg"
 import {FAIL_TOAST, INFO_TOAST, SUCCESS_TOAST} from "../../constant/toastTypes"
-import {ThemeContext} from "../../context/theme/ThemeReducer"
 import UndoSvg from "../../media/svg/UndoSvg"
 import MyTimer from "./MyTimer"
+import GetTheme from "../../hooks/GetTheme"
+import toastConstant from "../../constant/toastConstant"
 
 function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
 {
-    const timerInSecond = 5
+    const timerInSecond = toastConstant.timerInSecond
     const timerInMili = timerInSecond * 1000
-    const {state: {theme}} = useContext(ThemeContext)
+    const {isDark} = GetTheme()
     const [timerRemain, setTimerRemain] = useState(timerInMili)
     const toastRef = useRef(null)
     const toastMessageRef = useRef(null)
@@ -34,7 +35,11 @@ function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
                 toastRef.current.style.padding = "16px 16px"
                 toastRef.current.style.opacity = "1"
 
-                if (isUndo) timerInterval.current = setInterval(() => setTimerRemain(timer => timer - 10 > 0 ? timer - 10 : timer), 10)
+                if (isUndo)
+                {
+                    const start = new Date()
+                    timerInterval.current = setInterval(() => setTimerRemain(Math.max(0, Math.floor(timerInMili + start - new Date()))), 10)
+                }
                 unMountTimer.current = setTimeout(clearItem, timerInMili)
             }
             else setTimeout(show, 10)
@@ -78,23 +83,23 @@ function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
     }
 
     return (
-        <div className={`toast-item ${theme === "dark" ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClickFunc : clearItem}>
+        <div className={`toast-item ${isDark ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClickFunc : clearItem}>
             <div className="toast-item-message" ref={toastMessageRef}>
                 {
                     isUndo ?
                         <MyTimer percent={timerRemain / timerInMili * 100}
-                                 text={Math.ceil(timerRemain / timerInMili * 5)}
-                                 color={theme === "dark" ? "var(--first-text-color)" : type === SUCCESS_TOAST ? "var(--toast-success-text)" : type === FAIL_TOAST ? "var(--toast-fail-text)" : "var(--toast-info-text)"}
+                                 text={Math.ceil(timerRemain / timerInMili * timerInSecond)}
+                                 color={isDark ? "var(--first-text-color)" : type === SUCCESS_TOAST ? "var(--toast-success-text)" : type === FAIL_TOAST ? "var(--toast-fail-text)" : "var(--toast-info-text)"}
                                  className="toast-item-svg"
                         />
                         :
                         type === SUCCESS_TOAST ?
-                            <CheckSvg className={`toast-item-svg success ${theme === "dark" ? "dark" : ""}`}/>
+                            <CheckSvg className={`toast-item-svg success ${isDark ? "dark" : ""}`}/>
                             :
                             type === INFO_TOAST ?
-                                <InfoSvg className={`toast-item-svg info ${theme === "dark" ? "dark" : ""}`}/>
+                                <InfoSvg className={`toast-item-svg info ${isDark ? "dark" : ""}`}/>
                                 :
-                                <CloseSvg className={`toast-item-svg fail ${theme === "dark" ? "dark" : ""}`}/>
+                                <CloseSvg className={`toast-item-svg fail ${isDark ? "dark" : ""}`}/>
                 }
                 {message}
             </div>
