@@ -70,7 +70,13 @@ function Switch({children, isAuth, isTab, tabClassName})
             contRef.current.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 350, easing: "ease-in"})
             setTimeout(() =>
             {
-                setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
+                setStateFunc({
+                    type: type === "popstate" && stateRef.current.length < 2 ? null : type,
+                    showChildIndex: showChildIndexTemp,
+                    location: locationTemp,
+                    id: generateId(),
+                    delta,
+                })
                 setTimeout(() =>
                 {
                     const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
@@ -284,8 +290,8 @@ function Switch({children, isAuth, isTab, tabClassName})
         }
         else
         {
-            stateRef.current = [{showChildIndex, location, id}, ...stateRef.current]
-            setState(prevState => [{showChildIndex, location, id}, ...prevState])
+            stateRef.current = [{showChildIndex, location, id}, ...(window.innerWidth <= 480 ? stateRef.current : [])]
+            setState(prevState => [{showChildIndex, location, id}, ...(window.innerWidth <= 480 ? prevState : [])])
         }
     }
 
