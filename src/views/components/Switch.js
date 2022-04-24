@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react"
 import SwitchItem from "./SwitchItem"
-import SwitchGesture from "../../helpers/SwitchGesture"
+import SwitchGesture from "../../hooks/SwitchGesture"
 import parseTranslateX from "../../helpers/parseTranslateX"
 
 function Switch({children, isAuth, isTab, tabClassName})
@@ -94,7 +94,7 @@ function Switch({children, isAuth, isTab, tabClassName})
                             prePage.style.contentVisibility = `hidden`
                         }
                     }
-                }, 0)
+                }, 10)
                 contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 175, easing: "ease-out"})
             }, 195)
         }

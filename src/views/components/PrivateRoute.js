@@ -1,8 +1,8 @@
 import {useContext, useMemo} from "react"
-import {AuthContext} from "../context/auth/AuthReducer"
-import Route from "../views/components/Route"
-import Redirect from "../views/components/Redirect"
-import urlConstant from "../constant/urlConstant"
+import {AuthContext} from "../../context/auth/AuthReducer"
+import Route from "./Route"
+import Redirect from "./Redirect"
+import urlConstant from "../../constant/urlConstant"
 
 function PrivateRoute({ifNotLogin, dontChange, path, render, ...props})
 {

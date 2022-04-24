@@ -1,7 +1,7 @@
 import {useRef} from "react"
-import checkParentClass from "./checkParentClass"
-import goBack from "./goBack"
-import changeBodyOverflow from "./changeBodyOverflow"
+import checkParentClass from "../helpers/checkParentClass"
+import goBack from "../helpers/goBack"
+import changeBodyOverflow from "../helpers/changeBodyOverflow"
 
 function SwitchGesture({stateRef})
 {
