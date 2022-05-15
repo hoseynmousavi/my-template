@@ -42,10 +42,16 @@ function ThemeProvider({children})
         if (process.env.NODE_ENV === "development") loadColors()
         setCssVariables()
         themeManager.configTheme()
-        const theme = localStorage.getItem("theme")
-        if (theme === "dark" || (!theme && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches))
+        const defaultDark = window?.matchMedia("(prefers-color-scheme: dark)")
+
+        setTheme({isInitial: true})
+        defaultDark.addEventListener("change", setTheme)
+
+        function setTheme({isInitial})
         {
-            ThemeActions.changeTheme({theme: "dark", save: false, dispatch})
+            const theme = localStorage.getItem("theme")
+            if (theme === "dark" || (!theme && defaultDark?.matches)) ThemeActions.changeTheme({theme: "dark", save: false, dispatch})
+            else if (!isInitial && !theme) ThemeActions.changeTheme({theme: defaultDark?.matches, save: false, dispatch})
         }
     }, [])
 
