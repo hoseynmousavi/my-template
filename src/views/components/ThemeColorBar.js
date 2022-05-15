@@ -1,11 +1,11 @@
-import {useContext, useEffect, useState} from "react"
-import {ThemeContext} from "../../context/theme/ThemeReducer"
+import {useEffect, useState} from "react"
 import themeConstant from "../../constant/themeConstant"
 import getComputedStyleHelper from "../../helpers/getComputedStyleHelper"
+import GetTheme from "../../hooks/GetTheme"
 
 function ThemeColorBar()
 {
-    const {state: {theme}} = useContext(ThemeContext)
+    const {isDark} = GetTheme()
     const [barColor, setBarColor] = useState(getComputedStyleHelper(themeConstant.defaultColor))
 
     useEffect(() =>
@@ -23,7 +23,7 @@ function ThemeColorBar()
     return (
         <>
             <meta name="theme-color" content={barColor}/>
-            <meta name="apple-mobile-web-app-status-bar-style" content={theme === "dark" ? "black" : "default"}/>
+            <meta name="apple-mobile-web-app-status-bar-style" content={isDark ? "black" : "default"}/>
         </>
     )
 }

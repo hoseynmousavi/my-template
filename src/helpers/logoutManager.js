@@ -1,3 +1,6 @@
+import AuthActions from "../context/auth/AuthActions"
+import urlConstant from "../constant/urlConstant"
+
 const configLogout = () =>
 {
     if (!window.logout)
@@ -10,9 +13,11 @@ const configLogout = () =>
     }
 }
 
-const logout = () =>
+const logout = ({sendLogoutReq = true}) =>
 {
-    window.logout()
+    if (sendLogoutReq) AuthActions.logout()
+    else window.history.replaceState("for-history", "", urlConstant.home)
+    setTimeout(window.logout, 0)
 }
 
 const setLogOut = ({callBack}) =>
