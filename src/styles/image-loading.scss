@@ -5,7 +5,6 @@
   background-color: var(--second-background-color);
   overflow: hidden;
   transform: perspective(0);
-  pointer-events: none;
 
   &:after {
     position: absolute;
@@ -35,6 +34,7 @@
 
 .image-loading-main {
   opacity: 0;
+  margin: 0 !important;
 
   &.loaded {
     opacity: 1;
