@@ -73,15 +73,22 @@ function SwitchGesture({stateRef})
         const prePage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
         const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 2].id)
 
-        let translatePreTemp = translatePre.current / window.innerWidth * 100
-        let stepPre = 7
-        let translateNextTemp = translateNext.current / window.innerWidth * 100
-        let stepNext = 4
+        const pre = translatePre.current / window.innerWidth * 100
+        const next = translateNext.current / window.innerWidth * 100
+
+        let translatePreTemp = pre
+        let translateNextTemp = next
+        let step
+        let lst = Date.now()
 
         function anime()
         {
-            translatePreTemp = translatePreTemp - stepPre > 0 ? translatePreTemp - stepPre : 0
-            translateNextTemp = translateNextTemp - stepNext > -60 ? translateNextTemp - stepNext : -60
+            const dif = Date.now() - lst
+            lst = Date.now()
+            step = 100 * dif / (1000 / 4)
+
+            translatePreTemp = translatePreTemp - step > 0 ? translatePreTemp - step : 0
+            translateNextTemp = translateNextTemp - (step / 2) > -60 ? translateNextTemp - (step / 2) : -60
             nextPage.style.transform = `translate3d(${translateNextTemp}%, 0, 0)`
             prePage.style.transform = `translate3d(${translatePreTemp}%, 0, 0)`
             if (translatePreTemp > 0) window.requestAnimationFrame(anime)

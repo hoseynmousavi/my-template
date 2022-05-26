@@ -119,14 +119,18 @@ function Switch({children, isAuth, isTab, tabClassName})
                     nextPage.style.contentVisibility = `visible`
 
                     let translatePre = 0
-                    let stepPre = 4
                     let translateNext = 100
-                    let stepNext = 7
+                    let step
+                    let lst = Date.now()
 
                     function anime()
                     {
-                        translatePre = translatePre - stepPre > -100 ? translatePre - stepPre : -100
-                        translateNext = translateNext - stepNext > 0 ? translateNext - stepNext : 0
+                        const dif = Date.now() - lst
+                        lst = Date.now()
+                        step = 100 * dif / (1000 / 4)
+
+                        translatePre = translatePre - (step / 2) > -100 ? translatePre - (step / 2) : -100
+                        translateNext = translateNext - step > 0 ? translateNext - step : 0
                         nextPage.style.transform = `translate3d(${translateNext}%, 0, 0)`
                         prePage.style.transform = `translate3d(${translatePre}%, 0, 0)`
                         if (translateNext > 0) window.requestAnimationFrame(anime)
@@ -211,14 +215,18 @@ function Switch({children, isAuth, isTab, tabClassName})
                 nextPage.style.contentVisibility = `visible`
 
                 let translatePre = pre
-                let stepPre = 7
                 let translateNext = next
-                let stepNext = 4
+                let step
+                let lst = Date.now()
 
                 function anime()
                 {
-                    translatePre = translatePre + stepPre < 100 ? translatePre + stepPre : 100
-                    translateNext = translateNext + stepNext < 0 ? translateNext + stepNext : 0
+                    const dif = Date.now() - lst
+                    lst = Date.now()
+                    step = 100 * dif / (1000 / 4)
+
+                    translatePre = translatePre + step < 100 ? translatePre + step : 100
+                    translateNext = translateNext + (step / 2) < 0 ? translateNext + (step / 2) : 0
                     nextPage.style.transform = `translate3d(${translateNext}%, 0, 0)`
                     prePage.style.transform = `translate3d(${translatePre}%, 0, 0)`
                     if (translateNext < 0) window.requestAnimationFrame(anime)
