@@ -124,46 +124,23 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
         }
     }
 
-    if (isDiv)
-    {
-        return (
-            <div id={id}
-                 ref={container}
-                 onContextMenu={onContext}
-                 style={style || {}}
-                 className={`material ${className}`}
-                 onMouseDown={onMouseDown}
-                 onMouseUp={handleButtonRelease}
-                 onMouseLeave={handleLeave}
-                 onTouchStart={onTouchStart}
-                 onTouchMove={onTouchMove}
-                 onTouchEnd={onTouchEnd}
-                 onClick={onClickClick}>
-                {children}
-            </div>
-        )
-    }
-    else
-    {
-        return (
-            <button id={id}
-                    ref={container}
-                    onContextMenu={onContext}
-                    style={style || {}}
-                    className={`material ${className}`}
-                    onMouseDown={onMouseDown}
-                    onMouseUp={handleButtonRelease}
-                    onMouseLeave={handleLeave}
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={onTouchEnd}
-                    onClick={onClickClick}>
-                {children}
-            </button>
-        )
-    }
+    const Tag = isDiv ? "div" : "button"
+    return (
+        <Tag id={id}
+             ref={container}
+             onContextMenu={onContext}
+             style={style}
+             className={`material ${className}`}
+             onMouseDown={onMouseDown}
+             onMouseUp={handleButtonRelease}
+             onMouseLeave={handleLeave}
+             onTouchStart={onTouchStart}
+             onTouchMove={onTouchMove}
+             onTouchEnd={onTouchEnd}
+             onClick={onClickClick}>
+            {children}
+        </Tag>
+    )
 }
 
 export default memo(Material)
-
-// written by #Hoseyn

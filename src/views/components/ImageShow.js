@@ -1,83 +1,60 @@
-import {memo, useRef} from "react"
+import {memo, useRef, useState} from "react"
 import popOnPopState from "../../helpers/popOnPopState"
 import goBack from "../../helpers/goBack"
 import onResize from "../../helpers/onResize"
 import ImageLoading from "./ImageLoading"
 import changeViewport from "../../helpers/changeViewport"
+import {createPortal} from "react-dom"
+import ImageShowGesture from "../../hooks/ImageShowGesture"
 
-function ImageShow({className, src, alt = "", loading = "lazy", draggable = "false", style, zoomable, onClick})
+function ImageShow({className, src, alt = "", loading = "lazy", draggable = "false", style = {}, zoomable, onClick})
 {
+    const [showPicture, setShowPicture] = useState(null)
     const imgRef = useRef(null)
     const removeResize = useRef(null)
+    const {imageBackRef, imageRef, onTouchEnd, onTouchMove, onTouchStart} = ImageShowGesture()
 
     function openImage(e)
     {
         e.stopPropagation()
         popOnPopState({key: "Escape", callback: closeImage})
         changeViewport({zoomable: true})
-        const copyImage = imgRef.current.cloneNode(true)
-        removeResize.current = onResize({callback: () => setImgPosition(copyImage)})
-        const rect = imgRef.current.getBoundingClientRect()
-        copyImage.id = "picture"
-        copyImage.src = src
-        copyImage.style.animation = "none"
-        copyImage.style.margin = "0"
-        copyImage.style.maxHeight = "initial"
-        copyImage.style.maxWidth = "initial"
-        copyImage.style.position = "fixed"
-        copyImage.style.zIndex = "var(--modal-z-index)"
-        copyImage.style.top = rect.top + "px"
-        copyImage.style.height = rect.height + "px"
-        copyImage.style.width = rect.width + "px"
-        copyImage.style.left = rect.left + "px"
-        copyImage.style.right = "auto"
-        copyImage.style.transition = "all ease 0.2s"
-        const backGround = document.createElement("div")
-        backGround.style.cursor = "pointer"
-        backGround.id = "backGround"
-        backGround.className = "back-cont"
-        let backed = false
-        copyImage.onclick = () =>
-        {
-            if (!backed && window.innerWidth > 480)
-            {
-                backed = true
-                goBack()
-            }
-        }
-        backGround.onclick = () =>
-        {
-            if (!backed)
-            {
-                backed = true
-                goBack()
-            }
-        }
-        document.body.append(backGround)
-        document.body.append(copyImage)
-        imgRef.current.style.opacity = "0"
-        setImgPosition(copyImage)
+        const {top, left, width, height} = imgRef.current.getBoundingClientRect()
+        setShowPicture({top, left, width, height})
     }
 
-    function setImgPosition(copyImage)
+    function openImageLoaded()
+    {
+        removeResize.current = onResize({callback: setImgPosition})
+        imgRef.current.style.opacity = "0"
+        setImgPosition()
+    }
+
+    function setImgPosition()
     {
         setTimeout(() =>
         {
-            copyImage.style.borderRadius = "0"
-            copyImage.style.boxShadow = "none"
             if (imgRef.current.naturalWidth / imgRef.current.naturalHeight > window.innerWidth / window.innerHeight)
             {
-                copyImage.style.top = (window.innerHeight - (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight) / 2 + "px"
-                copyImage.style.left = "0px"
-                copyImage.style.width = window.innerWidth + "px"
-                copyImage.style.height = (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight + "px"
+                setShowPicture({
+                    top: (window.innerHeight - (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight) / 2,
+                    left: 0,
+                    width: window.innerWidth,
+                    height: (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight,
+                    borderRadius: "0",
+                    boxShadow: "none",
+                })
             }
             else
             {
-                copyImage.style.top = "0px"
-                copyImage.style.left = (window.innerWidth - (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth) / 2 + "px"
-                copyImage.style.height = window.innerHeight + "px"
-                copyImage.style.width = (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth + "px"
+                setShowPicture({
+                    top: 0,
+                    left: (window.innerWidth - (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth) / 2,
+                    width: (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth,
+                    height: window.innerHeight,
+                    borderRadius: "0",
+                    boxShadow: "none",
+                })
             }
         }, 0)
     }
@@ -86,28 +63,58 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     {
         removeResize.current?.()
         changeViewport({zoomable: false})
-        const rect = imgRef.current.getBoundingClientRect()
-        const copyImage = document.getElementById("picture")
-        const backGround = document.getElementById("backGround")
-        backGround.className = "back-cont hide dont-gesture"
-        copyImage.style.top = rect.top + "px"
-        copyImage.style.height = rect.height + "px"
-        copyImage.style.width = rect.width + "px"
-        copyImage.style.left = rect.left + "px"
-        copyImage.style.borderRadius = getComputedStyle(imgRef.current).getPropertyValue("border-radius")
-        copyImage.style.boxShadow = getComputedStyle(imgRef.current).getPropertyValue("box-shadow")
-        copyImage.style.right = "auto"
+        const {top, left, width, height} = imgRef.current.getBoundingClientRect()
+        setShowPicture({isHiding: true, top, left, width, height, borderRadius: getComputedStyle(imgRef.current).getPropertyValue("border-radius"), boxShadow: getComputedStyle(imgRef.current).getPropertyValue("box-shadow")})
         setTimeout(() =>
         {
             imgRef.current.style.opacity = "1"
-            copyImage.remove()
-            backGround.remove()
-        }, 200)
+            setShowPicture(null)
+        }, 370)
     }
 
-    return <ImageLoading key={src} className={className} style={style} loading={loading} ref={imgRef} src={src} alt={alt} draggable={draggable} onClick={zoomable ? openImage : onClick ? onClick : undefined}/>
+    function onClose({isBackground})
+    {
+        return function ()
+        {
+            if (isBackground || window.innerWidth > 480) goBack()
+        }
+    }
+
+    return (
+        <>
+            <ImageLoading key={src} className={className} style={style} loading={loading} ref={imgRef} src={src} alt={alt} draggable={draggable} onClick={zoomable ? openImage : onClick ? onClick : undefined}/>
+            {
+                showPicture &&
+                createPortal(
+                    <>
+                        <div ref={imageBackRef} className={`back-cont dont-gesture ${showPicture.isHiding ? "hide" : ""}`} onClick={onClose({isBackground: true})}/>
+                        <img className={`${className} image-show-picture`}
+                             ref={imageRef}
+                             onTouchStart={onTouchStart}
+                             onTouchMove={onTouchMove}
+                             onTouchEnd={onTouchEnd}
+                             style={{
+                                 ...style,
+                                 transition: "all var(--first-transition)",
+                                 top: showPicture.top + "px",
+                                 left: showPicture.left + "px",
+                                 width: showPicture.width + "px",
+                                 height: showPicture.height + "px",
+                                 ...(showPicture.borderRadius ? {borderRadius: showPicture.borderRadius} : {}),
+                                 ...(showPicture.boxShadow ? {boxShadow: showPicture.boxShadow} : {}),
+                             }}
+                             src={src}
+                             alt={alt}
+                             onLoad={openImageLoaded}
+                             draggable="false"
+                             loading="easter"
+                             onClick={onClose({isBackground: false})}
+                        />
+                    </>
+                    , document.body)
+            }
+        </>
+    )
 }
 
 export default memo(ImageShow)
-
-// written by #Hoseyn

@@ -6,22 +6,14 @@
   bottom: 0;
   width: 100%;
   height: var(--full-height);
+  cursor: pointer;
   z-index: var(--modal-z-index);
   background-color: var(--first-background-color);
+  transition: opacity var(--first-transition);
   animation: fade-in-back ease 0.2s;
 
   &.hide {
-    opacity: 0;
-    animation: fade-out-back ease 0.2s;
-  }
-}
-
-@keyframes fade-out-back {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
+    opacity: 0 !important;
   }
 }
 
@@ -32,4 +24,14 @@
   to {
     opacity: 1;
   }
+}
+
+.image-show-picture {
+  animation: none !important;
+  margin: 0 !important;
+  max-height: initial !important;
+  max-width: initial !important;
+  position: fixed !important;
+  z-index: var(--modal-z-index) !important;
+  right: auto !important;
 }
