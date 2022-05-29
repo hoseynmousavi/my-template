@@ -1,16 +1,16 @@
 import hexToRgba from "./hexToRgba"
 import getComputedStyleHelper from "./getComputedStyleHelper"
 
-function createMaterialColor({variable, alpha = 0.3})
+function createMaterialColor({color, variable, alpha = 0.3})
 {
-    const color = getComputedStyleHelper(variable)
-    if (color.includes("rgba"))
+    const input = color || getComputedStyleHelper(variable)
+    if (input.includes("rgba"))
     {
-        const split = color.split(",")
+        const split = input.split(",")
         const a = split[3]
-        return color.replace(a, alpha + ")")
+        return input.replace(a, alpha + ")")
     }
-    else return hexToRgba(color, alpha)
+    else return hexToRgba(input, alpha)
 }
 
 export default createMaterialColor

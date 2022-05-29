@@ -12,11 +12,11 @@ const configRefreshToken = () =>
 
 const refreshToken = ({message}) =>
 {
+    configRefreshToken()
     window.refreshToken({message})
 }
 
 const refreshTokenManager = {
-    configRefreshToken,
     refreshToken,
 }
 

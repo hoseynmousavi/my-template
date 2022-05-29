@@ -1,9 +1,9 @@
+import AuthActions from "../context/auth/AuthActions"
 import toastConstant from "../constant/toastConstant"
 import {FAIL_TOAST} from "../constant/toastTypes"
-import logoutManager from "../helpers/logoutManager"
 import refreshTokenManager from "./refreshTokenManager"
 import toastManager from "../helpers/toastManager"
-import AuthActions from "../context/auth/AuthActions"
+import logoutManager from "../helpers/logoutManager"
 
 let isRefreshing = false
 
@@ -20,7 +20,6 @@ function refreshToken()
                     if (status)
                     {
                         isRefreshing = false
-                        refreshTokenManager.configRefreshToken()
                         refreshTokenManager.refreshToken({message: "OK"})
                         resolve()
                     }
@@ -28,8 +27,7 @@ function refreshToken()
                     {
                         isRefreshing = false
                         toastManager.addToast({message: toastConstant.tokenExpired, type: FAIL_TOAST})
-                        logoutManager.logout()
-                        refreshTokenManager.configRefreshToken()
+                        logoutManager.logout({sendLogoutReq: false})
                         refreshTokenManager.refreshToken({message: "NOK"})
                         reject()
                     }
@@ -44,7 +42,7 @@ function refreshToken()
                 else
                 {
                     toastManager.addToast({message: toastConstant.tokenExpired, type: FAIL_TOAST})
-                    logoutManager.logout()
+                    logoutManager.logout({sendLogoutReq: false})
                     reject()
                 }
                 window.removeEventListener("refreshToken", onRefreshEvent)
