@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "axios": "^0.26.1",
-    "browser-image-compression": "^1.0.17",
     "node-sass": "^7.0.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -18,7 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && .\\set-variables.sh || ./set-variables.sh",
+    "build": "react-scripts build && ./set-variables.sh || .\\set-variables.sh",
     "dockerbuild": "react-scripts build"
   },
   "eslintConfig": {
