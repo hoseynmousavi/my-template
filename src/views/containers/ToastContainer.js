@@ -12,12 +12,17 @@ function ToastContainer({location})
     {
         toastManager.configToast()
 
+        function generateId()
+        {
+            return (Math.random() + 1).toString(36).substring(7)
+        }
+
         function onToast(event)
         {
             const {message, type = INFO_TOAST, onClick, isUndo} = event.detail
             setActiveToasts(activeToasts =>
-                activeToasts.every(item => item.message !== message) ?
-                    [{message, type, onClick, isUndo}, ...activeToasts]
+                activeToasts.every(item => item.message !== message || isUndo) ?
+                    [{id: generateId(), message, type, onClick, isUndo}, ...activeToasts]
                     :
                     activeToasts,
             )
@@ -27,9 +32,9 @@ function ToastContainer({location})
         return () => window.removeEventListener("addToast", onToast)
     }, [])
 
-    function clearItem(message)
+    function clearItem(id)
     {
-        setActiveToasts(activeToasts => activeToasts.filter(item => item.message !== message))
+        setActiveToasts(activeToasts => activeToasts.filter(item => item.id !== id))
     }
 
     return (
@@ -37,7 +42,7 @@ function ToastContainer({location})
             <Suspense fallback={null}>
                 {
                     activeToasts.map(item =>
-                        <Toast key={item.message} item={item} clearMe={clearItem} location={location}/>,
+                        <Toast key={item.id} item={item} clearMe={clearItem} location={location}/>,
                     )
                 }
             </Suspense>

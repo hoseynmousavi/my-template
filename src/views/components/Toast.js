@@ -10,7 +10,7 @@ import MyTimer from "./MyTimer"
 import GetTheme from "../../hooks/GetTheme"
 import toastConstant from "../../constant/toastConstant"
 
-function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
+function Toast({item: {id, message, type, onClick, isUndo}, clearMe, location})
 {
     const timerInSecond = toastConstant.timerInSecond
     const timerInMili = timerInSecond * 1000
@@ -38,9 +38,14 @@ function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
                 if (isUndo)
                 {
                     const start = new Date()
-                    timerInterval.current = setInterval(() => setTimerRemain(Math.max(0, Math.floor(timerInMili + (start - new Date())))), 10)
+                    timerInterval.current = setInterval(() =>
+                    {
+                        const timerRemain = Math.max(0, Math.floor(timerInMili + (start - new Date())))
+                        if (timerRemain === 0) clearItem()
+                        else setTimerRemain(timerRemain)
+                    }, 10)
                 }
-                unMountTimer.current = setTimeout(clearItem, timerInMili)
+                else unMountTimer.current = setTimeout(clearItem, timerInMili)
             }
             else setTimeout(show, 10)
         }
@@ -72,7 +77,7 @@ function Toast({item: {message, type, onClick, isUndo}, clearMe, location})
             toastRef.current.style.opacity = "0"
             clearInterval(timerInterval.current)
             clearTimeout(unMountTimer.current)
-            clearTimer.current = setTimeout(() => clearMe(message), 250)
+            clearTimer.current = setTimeout(() => clearMe(id), 250)
         }
     }
 
