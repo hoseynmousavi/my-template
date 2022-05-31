@@ -144,7 +144,7 @@ function Switch({children, isAuth, isTab, tabClassName})
                     }
 
                     window.requestAnimationFrame(anime)
-                }, 0)
+                }, 10)
             }
             else
             {
@@ -244,7 +244,7 @@ function Switch({children, isAuth, isTab, tabClassName})
             else
             {
                 setStateFunc({showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId()})
-                setTimeout(doTheJob, 0)
+                setTimeout(doTheJob, 10)
             }
         }
     }

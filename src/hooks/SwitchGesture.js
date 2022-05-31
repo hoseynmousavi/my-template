@@ -3,6 +3,8 @@ import checkParentClass from "../helpers/checkParentClass"
 import goBack from "../helpers/goBack"
 import changeBodyOverflow from "../helpers/changeBodyOverflow"
 
+export const dontSwitchGesture = "dont-switch-gesture"
+
 function SwitchGesture({stateRef})
 {
     let started = useRef(false)
@@ -16,7 +18,7 @@ function SwitchGesture({stateRef})
 
     function onTouchStart(e)
     {
-        if (typeof requestAnimationFrame !== "undefined" && !checkParentClass(e.target, "dont-gesture"))
+        if (typeof requestAnimationFrame !== "undefined" && !checkParentClass(e.target, dontSwitchGesture))
         {
             posX.current = e.touches?.[0].clientX || e.clientX
             posY.current = e.touches?.[0].clientY || e.clientY

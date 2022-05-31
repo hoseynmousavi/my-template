@@ -6,6 +6,7 @@ import ImageLoading from "./ImageLoading"
 import changeViewport from "../../helpers/changeViewport"
 import {createPortal} from "react-dom"
 import ImageShowGesture from "../../hooks/ImageShowGesture"
+import {dontSwitchGesture} from "../../hooks/SwitchGesture"
 
 function ImageShow({className, src, alt = "", loading = "lazy", draggable = "false", style = {}, zoomable, onClick})
 {
@@ -87,7 +88,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                 showPicture &&
                 createPortal(
                     <>
-                        <div ref={imageBackRef} className={`back-cont dont-gesture ${showPicture.isHiding ? "hide" : ""}`} onClick={onClose({isBackground: true})}/>
+                        <div ref={imageBackRef} className={`back-cont ${dontSwitchGesture} ${showPicture.isHiding ? "hide" : ""}`} onClick={onClose({isBackground: true})}/>
                         <img className={`${className} image-show-picture`}
                              ref={imageRef}
                              onTouchStart={onTouchStart}
