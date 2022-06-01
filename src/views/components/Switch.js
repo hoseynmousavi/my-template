@@ -67,8 +67,9 @@ function Switch({children, isAuth, isTab, tabClassName})
 
         if (contRef.current.animate)
         {
-            contRef.current.animate([{opacity: 1}, {opacity: 0}, {opacity: 0}], {duration: 350, easing: "ease-in"})
-            setTimeout(() =>
+            contRef.current.style.opacity = "0"
+            const fadeOut = contRef.current.animate([{opacity: 1}, {opacity: 0}], {duration: 200, easing: "ease-in"})
+            fadeOut.finished.then(() =>
             {
                 setStateFunc({
                     type: type === "popstate" && stateRef.current.length < 2 ? null : type,
@@ -95,8 +96,9 @@ function Switch({children, isAuth, isTab, tabClassName})
                         }
                     }
                 }, 10)
-                contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 175, easing: "ease-out"})
-            }, 195)
+                contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 200, easing: "ease-out"})
+                contRef.current.style.removeProperty("opacity")
+            })
         }
         else setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
     }
