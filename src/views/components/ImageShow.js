@@ -44,7 +44,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                     width: fullWidth,
                     height: fullHeight,
                     borderRadius: "50px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                    boxShadow: "none",
                 })
             }
             else
@@ -57,7 +57,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                     width: fullWidth,
                     height: fullHeight,
                     borderRadius: "50px",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+                    boxShadow: "none",
                 })
             }
         }, 0)
@@ -104,7 +104,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                                  width: showPicture.width + "px",
                                  height: showPicture.height + "px",
                                  borderRadius: showPicture.borderRadius,
-                                 boxShadow: showPicture.boxShadow,
+                                 ...(showPicture.boxShadow ? {boxShadow: showPicture.boxShadow} : {}),
                              }}
                              src={src}
                              alt={alt}
