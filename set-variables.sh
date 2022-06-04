@@ -25,6 +25,8 @@ sed -i "s~TOAST_Z_INDEX~$REACT_APP_TOAST_Z_INDEX~g" build/index.html
 sed -i "s~MODAL_Z_INDEX~$REACT_APP_MODAL_Z_INDEX~g" build/index.html
 sed -i "s~HEADER_Z_INDEX~$REACT_APP_HEADER_Z_INDEX~g" build/index.html
 sed -i "s~DEFAULT_Z_INDEX~$REACT_APP_DEFAULT_Z_INDEX~g" build/index.html
+sed -i "s~TRANSITION_METHOD~$REACT_APP_TRANSITION_METHOD~g" build/index.html
+sed -i "s~FIRST_TRANSITION~$REACT_APP_FIRST_TRANSITION~g" build/index.html
 sed -i "s~TOAST_SUCCESS_BG~$REACT_APP_TOAST_SUCCESS_BG~g" build/index.html
 sed -i "s~TOAST_SUCCESS_TEXT~$REACT_APP_TOAST_SUCCESS_TEXT~g" build/index.html
 sed -i "s~TOAST_INFO_BG~$REACT_APP_TOAST_INFO_BG~g" build/index.html
