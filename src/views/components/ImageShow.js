@@ -3,7 +3,6 @@ import popOnPopState from "../../helpers/popOnPopState"
 import goBack from "../../helpers/goBack"
 import onResize from "../../helpers/onResize"
 import ImageLoading from "./ImageLoading"
-import changeViewport from "../../helpers/changeViewport"
 import {createPortal} from "react-dom"
 import ImageShowGesture from "../../hooks/ImageShowGesture"
 import {dontSwitchGesture} from "../../hooks/SwitchGesture"
@@ -19,7 +18,6 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     {
         e.stopPropagation()
         popOnPopState({key: "Escape", callback: closeImage})
-        changeViewport({zoomable: true})
         const {top, left, width, height} = imgRef.current.getBoundingClientRect()
         setShowPicture({top, left, width, height})
     }
@@ -33,28 +31,33 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
 
     function setImgPosition()
     {
+        const ratio = 0.95
         setTimeout(() =>
         {
             if (imgRef.current.naturalWidth / imgRef.current.naturalHeight > window.innerWidth / window.innerHeight)
             {
+                const fullWidth = window.innerWidth * ratio
+                const fullHeight = ((window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight) * ratio
                 setShowPicture({
-                    top: (window.innerHeight - (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight) / 2,
-                    left: 0,
-                    width: window.innerWidth,
-                    height: (window.innerWidth / imgRef.current.naturalWidth) * imgRef.current.naturalHeight,
-                    borderRadius: "0",
-                    boxShadow: "none",
+                    top: (window.innerHeight - fullHeight) / 2,
+                    left: ((1 - ratio) / 2) * window.innerWidth,
+                    width: fullWidth,
+                    height: fullHeight,
+                    borderRadius: "50px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                 })
             }
             else
             {
+                const fullWidth = ((window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth) * ratio
+                const fullHeight = window.innerHeight * ratio
                 setShowPicture({
-                    top: 0,
-                    left: (window.innerWidth - (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth) / 2,
-                    width: (window.innerHeight / imgRef.current.naturalHeight) * imgRef.current.naturalWidth,
-                    height: window.innerHeight,
-                    borderRadius: "0",
-                    boxShadow: "none",
+                    top: ((1 - ratio) / 2) * window.innerHeight,
+                    left: (window.innerWidth - fullWidth) / 2,
+                    width: fullWidth,
+                    height: fullHeight,
+                    borderRadius: "50px",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
                 })
             }
         }, 0)
@@ -63,7 +66,6 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     function closeImage()
     {
         removeResize.current?.()
-        changeViewport({zoomable: false})
         const {top, left, width, height} = imgRef.current.getBoundingClientRect()
         setShowPicture({isHiding: true, top, left, width, height, borderRadius: getComputedStyle(imgRef.current).getPropertyValue("border-radius"), boxShadow: getComputedStyle(imgRef.current).getPropertyValue("box-shadow")})
         setTimeout(() =>
@@ -101,8 +103,8 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                                  left: showPicture.left + "px",
                                  width: showPicture.width + "px",
                                  height: showPicture.height + "px",
-                                 ...(showPicture.borderRadius ? {borderRadius: showPicture.borderRadius} : {}),
-                                 ...(showPicture.boxShadow ? {boxShadow: showPicture.boxShadow} : {}),
+                                 borderRadius: showPicture.borderRadius,
+                                 boxShadow: showPicture.boxShadow,
                              }}
                              src={src}
                              alt={alt}
