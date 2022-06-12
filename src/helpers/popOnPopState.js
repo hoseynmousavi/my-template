@@ -2,7 +2,7 @@ import themeManager from "./themeManager"
 import changeBodyOverflow from "./changeBodyOverflow"
 import goBack from "./goBack"
 
-function popOnPopState({key, callback, dontPush, dontChangeOverflow, statusBarColor})
+function popOnPopState({key = "Escape", callback, dontPush, dontChangeOverflow, statusBarColor})
 {
     let pushed = 0
 

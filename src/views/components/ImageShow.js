@@ -17,7 +17,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     function openImage(e)
     {
         e.stopPropagation()
-        popOnPopState({key: "Escape", callback: closeImage})
+        popOnPopState({callback: closeImage})
         const {top, left, width, height} = imgRef.current.getBoundingClientRect()
         setShowPicture({top, left, width, height})
     }
