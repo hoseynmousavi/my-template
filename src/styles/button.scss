@@ -35,13 +35,13 @@
 
   &.active {
     &:focus-visible {
-      box-shadow: 0 0 0 2px var(--second-color);
+      box-shadow: 0 0 0 2px var(--second-color) !important;
     }
   }
 }
 
 button {
   &:focus-visible {
-    box-shadow: 0 0 0 2px var(--first-color);
+    box-shadow: 0 0 0 2px var(--first-color) !important;
   }
 }
