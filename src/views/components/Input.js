@@ -113,7 +113,7 @@ function Input({
             }
             else if (validation === "national_code")
             {
-                const value = numberCorrection(e.target.value.trim())
+                const value = numberCorrection(e.target.value.trim().slice(0, 10))
                 if (!isNaN(value) && value.length <= 10) setValue(value)
                 if (checkNationalCode(value)) onChange({name, value})
                 else onChange({name, value: value || required ? null : ""})
@@ -121,7 +121,7 @@ function Input({
             }
             else if (validation === "phone")
             {
-                const value = numberCorrection(e.target.value.trim())
+                const value = numberCorrection(e.target.value.trim().slice(0, 11))
                 if (!isNaN(value) && value.length <= 11) setValue(value)
                 if (regexConstant.PHONE_REGEX.test(value)) onChange({name, value})
                 else onChange({name, value: value || required ? null : ""})

@@ -3,7 +3,8 @@ import {useRef, memo} from "react"
 function Material({children, isDiv, backgroundColor, id, className, style, onClick, onDisableClick, disable})
 {
     const container = useRef(null)
-    let buttonPressTimer, pageX, pageY, ripple
+    const buttonPressTimer = useRef(null)
+    let pageX, pageY, ripple
 
     function appendRipple({x, y}, isSlow)
     {
@@ -61,7 +62,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
     {
         if (window.innerWidth > 480)
         {
-            clearTimeout(buttonPressTimer)
+            clearTimeout(buttonPressTimer.current)
             if (!ripple) appendRipple({x: e.clientX, y: e.clientY}, false)
             else removeRipple(false)
         }
@@ -69,14 +70,14 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
 
     function onMouseDown(e)
     {
-        if (window.innerWidth > 480) buttonPressTimer = setTimeout(() => appendRipple({x: e.clientX, y: e.clientY}, true), 300)
+        if (window.innerWidth > 480) buttonPressTimer.current = setTimeout(() => appendRipple({x: e.clientX, y: e.clientY}, true), 300)
     }
 
     function handleLeave()
     {
         if (window.innerWidth > 480)
         {
-            clearTimeout(buttonPressTimer)
+            clearTimeout(buttonPressTimer.current)
             removeRipple(true)
         }
     }
@@ -87,7 +88,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
         {
             pageX = e.touches[0].clientX
             pageY = e.touches[0].clientY
-            buttonPressTimer = setTimeout(() => appendRipple({x: pageX, y: pageY}, true), 300)
+            buttonPressTimer.current = setTimeout(() => appendRipple({x: pageX, y: pageY}, true), 300)
         }
     }
 
@@ -95,7 +96,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
     {
         if (window.innerWidth <= 480)
         {
-            clearTimeout(buttonPressTimer)
+            clearTimeout(buttonPressTimer.current)
             removeRipple(true)
             pageX = null
             pageY = null
@@ -106,7 +107,7 @@ function Material({children, isDiv, backgroundColor, id, className, style, onCli
     {
         if (window.innerWidth <= 480)
         {
-            clearTimeout(buttonPressTimer)
+            clearTimeout(buttonPressTimer.current)
             if (!ripple) appendRipple({x: pageX, y: pageY}, false)
             else removeRipple(false)
         }
