@@ -7,11 +7,11 @@ source .env.local
 sed -i "s~NAME~$REACT_APP_NAME~g" build/manifest.json
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/manifest.json
 sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/manifest.json
+sed -i "s~PRECONNECT~$REACT_APP_REST_URL~g" build/index.html
+sed -i "s~DNS~$REACT_APP_REST_URL~g" build/index.html
 sed -i "s~NAME~$REACT_APP_NAME~g" build/index.html
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/index.html
 sed -i "s~KEYWORDS~$REACT_APP_KEYWORDS~g" build/index.html
-sed -i "s~PRECONNECT~$REACT_APP_REST_URL~g" build/index.html
-sed -i "s~DNS~$REACT_APP_REST_URL~g" build/index.html
 sed -i "s~DESKTOP_VIEWPORT~$REACT_APP_DESKTOP_VIEWPORT~g" build/index.html
 sed -i "s~FULL_VIEWPORT~$REACT_APP_FULL_VIEWPORT~g" build/index.html
 sed -i "s~FULL_HEIGHT~$REACT_APP_FULL_HEIGHT~g" build/index.html
@@ -43,8 +43,6 @@ sed -i "s~SECOND_BACKGROUND_COLOR~$REACT_APP_SECOND_BACKGROUND_COLOR~g" build/in
 sed -i "s~FIRST_MODAL_BACKGROUND_COLOR~$REACT_APP_FIRST_MODAL_BACKGROUND_COLOR~g" build/index.html
 sed -i "s~SECOND_MODAL_BACKGROUND_COLOR~$REACT_APP_SECOND_MODAL_BACKGROUND_COLOR~g" build/index.html
 sed -i "s~THIRD_MODAL_BACKGROUND_COLOR~$REACT_APP_THIRD_MODAL_BACKGROUND_COLOR~g" build/index.html
-sed -i "s~SOLID_LIGHT~$REACT_APP_SOLID_LIGHT~g" build/index.html
-sed -i "s~SOLID_DARK~$REACT_APP_SOLID_DARK~g" build/index.html
 sed -i "s~FIRST_TEXT_COLOR~$REACT_APP_FIRST_TEXT_COLOR~g" build/index.html
 sed -i "s~SECOND_TEXT_COLOR~$REACT_APP_SECOND_TEXT_COLOR~g" build/index.html
 sed -i "s~THIRD_TEXT_COLOR~$REACT_APP_THIRD_TEXT_COLOR~g" build/index.html
@@ -62,4 +60,6 @@ sed -i "s~TITLE_FONT~$REACT_APP_TITLE_FONT~g" build/index.html
 sed -i "s~LARGE_FONT~$REACT_APP_LARGE_FONT~g" build/index.html
 sed -i "s~BIG_FONT~$REACT_APP_BIG_FONT~g" build/index.html
 sed -i "s~HUGE_FONT~$REACT_APP_HUGE_FONT~g" build/index.html
+sed -i "s~SOLID_LIGHT~$REACT_APP_SOLID_LIGHT~g" build/index.html
+sed -i "s~SOLID_DARK~$REACT_APP_SOLID_DARK~g" build/index.html
 echo "VARIABLES SET SUCCESSFULLY"
