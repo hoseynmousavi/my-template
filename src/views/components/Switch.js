@@ -71,33 +71,36 @@ function Switch({children, isAuth, isTab, tabClassName})
             const fadeOut = contRef.current.animate([{opacity: 1}, {opacity: 0}], {duration: 200, easing: "ease-in"})
             fadeOut.finished.then(() =>
             {
-                setStateFunc({
-                    type: type === "popstate" && stateRef.current.length < 2 ? null : type,
-                    showChildIndex: showChildIndexTemp,
-                    location: locationTemp,
-                    id: generateId(),
-                    delta,
-                })
                 setTimeout(() =>
                 {
-                    const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
-                    if (nextPage)
+                    setStateFunc({
+                        type: type === "popstate" && stateRef.current.length < 2 ? null : type,
+                        showChildIndex: showChildIndexTemp,
+                        location: locationTemp,
+                        id: generateId(),
+                        delta,
+                    })
+                    setTimeout(() =>
                     {
-                        nextPage.style.opacity = `1`
-                        nextPage.style.contentVisibility = `visible`
-                    }
-                    if (type === "pushstate")
-                    {
-                        const prePage = document.getElementById(stateRef.current[stateRef.current.length - 2].id)
-                        if (prePage)
+                        contRef.current.style.removeProperty("opacity")
+                        const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
+                        if (nextPage)
                         {
-                            prePage.style.opacity = `0`
-                            prePage.style.contentVisibility = `hidden`
+                            nextPage.style.opacity = `1`
+                            nextPage.style.contentVisibility = `visible`
                         }
-                    }
-                }, 10)
-                contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 200, easing: "ease-out"})
-                contRef.current.style.removeProperty("opacity")
+                        if (type === "pushstate")
+                        {
+                            const prePage = document.getElementById(stateRef.current[stateRef.current.length - 2].id)
+                            if (prePage)
+                            {
+                                prePage.style.opacity = `0`
+                                prePage.style.contentVisibility = `hidden`
+                            }
+                        }
+                    }, 10)
+                    contRef.current.animate([{opacity: 0}, {opacity: 1}], {duration: 200, easing: "ease-out"})
+                }, 0)
             })
         }
         else setStateFunc({type, showChildIndex: showChildIndexTemp, location: locationTemp, id: generateId(), delta})
