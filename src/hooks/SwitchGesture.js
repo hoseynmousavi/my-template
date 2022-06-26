@@ -34,7 +34,7 @@ function SwitchGesture({stateRef})
         const prePage = document.getElementById(stateRef.current[stateRef.current.length - 1].id)
         const nextPage = document.getElementById(stateRef.current[stateRef.current.length - 2]?.id)
 
-        if ((changing.current || (started.current && deltaY.current < 5 && deltaY.current > -5)) && nextPage && prePage)
+        if ((changing.current || (started.current && deltaX.current < 0 && deltaY.current < 5 && deltaY.current > -5)) && nextPage && prePage)
         {
             changeBodyOverflow(true)
             changing.current = true
