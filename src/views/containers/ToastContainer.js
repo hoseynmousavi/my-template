@@ -1,8 +1,7 @@
-import {useEffect, useState, Suspense, lazy} from "react"
+import {useEffect, useState} from "react"
 import toastManager from "../../helpers/toastManager"
 import {INFO_TOAST} from "../../constant/toastTypes"
-
-const Toast = lazy(() => import("../components/Toast"))
+import Toast from "../components/Toast"
 
 function ToastContainer({location})
 {
@@ -39,13 +38,11 @@ function ToastContainer({location})
 
     return (
         <div className="toast-container">
-            <Suspense fallback={null}>
-                {
-                    activeToasts.map(item =>
-                        <Toast key={item.id} item={item} clearMe={clearItem} location={location}/>,
-                    )
-                }
-            </Suspense>
+            {
+                activeToasts.map(item =>
+                    <Toast key={item.id} item={item} clearMe={clearItem} location={location}/>,
+                )
+            }
         </div>
     )
 }

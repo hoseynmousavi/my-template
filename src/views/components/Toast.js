@@ -96,6 +96,7 @@ function Toast({item: {id, message, type, onClick, isUndo}, clearMe, location})
                                  text={Math.ceil(timerRemain / timerInMili * timerInSecond)}
                                  color={isDark ? "var(--first-text-color)" : type === SUCCESS_TOAST ? "var(--toast-success-text)" : type === FAIL_TOAST ? "var(--toast-fail-text)" : "var(--toast-info-text)"}
                                  className="toast-item-svg"
+                                 haveBg
                         />
                         :
                         type === SUCCESS_TOAST ?

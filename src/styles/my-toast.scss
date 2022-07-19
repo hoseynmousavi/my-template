@@ -98,6 +98,11 @@
   border-radius: 50%;
   margin-left: 8px;
 
+  .timer-text {
+    padding-top: 3px;
+    font-size: var(--tiny-font);
+  }
+
   &.success {
     path {
       stroke: var(--toast-success-text)
