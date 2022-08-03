@@ -1,21 +1,13 @@
-import React, {useEffect, useState} from "react"
+import React, {useEffect} from "react"
 import blockIosSwipe from "../../helpers/blockIosSwipe"
 
 function withRouter(WrappedComponent)
 {
     return function ()
     {
-        const [location, setLocation] = useState(null)
-
         useEffect(() =>
         {
-            setIndex()
-
             if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual"
-
-            window.addEventListener("popstate", setIndex, {passive: true})
-            window.addEventListener("pushstate", setIndex, {passive: true})
-            window.addEventListener("replacestate", setIndex, {passive: true})
 
             const pushState = window.history.pushState
             window.history.pushState = function (state)
@@ -42,10 +34,7 @@ function withRouter(WrappedComponent)
             blockIosSwipe()
         }, [])
 
-        const setIndex = () => setLocation(window.location.pathname)
-
-        if (location) return <WrappedComponent location={location}/>
-        else return null
+        return <WrappedComponent/>
     }
 }
 

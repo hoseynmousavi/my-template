@@ -3,7 +3,7 @@ import toastManager from "../../helpers/toastManager"
 import {INFO_TOAST} from "../../constant/toastTypes"
 import Toast from "../components/Toast"
 
-function ToastContainer({location})
+function ToastContainer()
 {
     const [activeToasts, setActiveToasts] = useState([])
 
@@ -40,7 +40,7 @@ function ToastContainer({location})
         <div className="toast-container">
             {
                 activeToasts.map(item =>
-                    <Toast key={item.id} item={item} clearMe={clearItem} location={location}/>,
+                    <Toast key={item.id} item={item} clearMe={clearItem}/>,
                 )
             }
         </div>

@@ -1,13 +1,13 @@
 import ToastContainer from "./views/containers/ToastContainer"
 import ThemeColorBar from "./views/components/ThemeColorBar"
 
-function App({location})
+function App()
 {
     return (
         <div id="index-temp" className="index-temp">
             <ThemeColorBar/>
             YES
-            <ToastContainer location={location}/>
+            <ToastContainer/>
         </div>
     )
 }

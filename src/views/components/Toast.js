@@ -10,7 +10,7 @@ import MyTimer from "./MyTimer"
 import GetTheme from "../../hooks/GetTheme"
 import toastConstant from "../../constant/toastConstant"
 
-function Toast({item: {id, message, type, onClick, isUndo}, clearMe, location})
+function Toast({item: {id, message, type, onClick, isUndo}, clearMe})
 {
     const timerInSecond = toastConstant.timerInSecond
     const timerInMili = timerInSecond * 1000
@@ -21,7 +21,6 @@ function Toast({item: {id, message, type, onClick, isUndo}, clearMe, location})
     const clearTimer = useRef(null)
     const timerInterval = useRef(null)
     const unMountTimer = useRef(null)
-    const didMountLocation = useRef(location)
 
     useLayoutEffect(() =>
     {
@@ -62,9 +61,11 @@ function Toast({item: {id, message, type, onClick, isUndo}, clearMe, location})
 
     useLayoutEffect(() =>
     {
-        if (didMountLocation.current !== location) clearItem()
+        window.addEventListener("popstate", clearItem, {passive: true})
+        window.addEventListener("pushstate", clearItem, {passive: true})
+        window.addEventListener("replacestate", clearItem, {passive: true})
         // eslint-disable-next-line
-    }, [location])
+    }, [])
 
     function clearItem()
     {
