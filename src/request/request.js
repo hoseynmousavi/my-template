@@ -13,10 +13,10 @@ function handleRepeat({reqUrl})
 
         function onDataEvent(event)
         {
-            window.removeEventListener("dataShare", onDataEvent)
             const {message: {status, dataReqUrl, data}} = event.detail
             if (reqUrl === dataReqUrl)
             {
+                window.removeEventListener("dataShare", onDataEvent)
                 if (status === "OK") resolve(data)
                 else reject(data)
             }
