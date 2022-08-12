@@ -9,6 +9,7 @@ import UndoSvg from "../../media/svg/UndoSvg"
 import MyTimer from "./MyTimer"
 import GetTheme from "../../hooks/GetTheme"
 import toastConstant from "../../constant/toastConstant"
+import pageLoaded from "../../helpers/pageLoaded"
 
 function Toast({item: {id, message, type, onClick, isUndo}, clearMe})
 {
@@ -26,7 +27,7 @@ function Toast({item: {id, message, type, onClick, isUndo}, clearMe})
     {
         function show()
         {
-            if (document.readyState === "complete" || document.readyState === "loaded")
+            if (pageLoaded())
             {
                 toastRef.current.style.transition = "height ease 0.1s, margin-bottom ease 0.1s, padding ease 0.1s, opacity ease 0.3s 0.1s"
                 toastRef.current.style.height = toastMessageRef.current.scrollHeight + 32 + "px"
