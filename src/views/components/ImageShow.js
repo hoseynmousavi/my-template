@@ -13,12 +13,14 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     const imgRef = useRef(null)
     const removeResize = useRef(null)
     const {imageBackRef, imageRef, onTouchEnd, onTouchMove, onTouchStart} = ImageShowGesture()
+    const rect = useRef(null)
 
     function openImage(e)
     {
         e.stopPropagation()
         popOnPopState({callback: closeImage})
-        const {top, left, width, height} = imgRef.current.getBoundingClientRect()
+        rect.current = imgRef.current.getBoundingClientRect()
+        const {top, left, width, height} = rect.current
         setShowPicture({top, left, width, height})
     }
 
@@ -43,7 +45,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                     left: ((1 - ratio) / 2) * window.innerWidth,
                     width: fullWidth,
                     height: fullHeight,
-                    borderRadius: "50px",
+                    borderRadius: "40px",
                     boxShadow: "none",
                 })
             }
@@ -56,7 +58,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                     left: (window.innerWidth - fullWidth) / 2,
                     width: fullWidth,
                     height: fullHeight,
-                    borderRadius: "50px",
+                    borderRadius: "40px",
                     boxShadow: "none",
                 })
             }
@@ -66,7 +68,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
     function closeImage()
     {
         removeResize.current?.()
-        const {top, left, width, height} = imgRef.current.getBoundingClientRect()
+        const {top, left, width, height} = rect.current
         setShowPicture({isHiding: true, top, left, width, height, borderRadius: getComputedStyle(imgRef.current).getPropertyValue("border-radius"), boxShadow: getComputedStyle(imgRef.current).getPropertyValue("box-shadow")})
         setTimeout(() =>
         {
@@ -93,6 +95,7 @@ function ImageShow({className, src, alt = "", loading = "lazy", draggable = "fal
                         <div ref={imageBackRef} className={`back-cont ${dontSwitchGesture} ${showPicture.isHiding ? "hide" : ""}`} onClick={onClose({isBackground: true})}/>
                         <img className={`${className} image-show-picture`}
                              ref={imageRef}
+                             onMouseDown={onTouchStart}
                              onTouchStart={onTouchStart}
                              onTouchMove={onTouchMove}
                              onTouchEnd={onTouchEnd}
