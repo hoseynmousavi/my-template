@@ -90,7 +90,7 @@ function Toast({item: {id, message, type, onClick, isUndo}, clearMe})
     }
 
     return (
-        <div className={`toast-item ${isDark ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onClick={onClick ? onClickFunc : clearItem}>
+        <div className={`toast-item ${isDark ? "dark" : ""} ${type}`} ref={toastRef} style={{height: "0", opacity: "0", marginBottom: "0", padding: "0 16px"}} onTouchEnd={!(isUndo || onClick) && clearItem} onClick={onClick ? onClickFunc : clearItem}>
             <div className="toast-item-message" ref={toastMessageRef}>
                 {
                     isUndo ?
