@@ -1,38 +1,43 @@
 import {SET_USER} from "./AuthTypes"
-import request from "../../request/request"
+import request from "../../seyed-modules/request/request"
 import apiUrlsConstant from "../../constant/apiUrlsConstant"
+import cookieHelper from "../../seyed-modules/helpers/cookieHelper"
 
-const sendOtp = ({mobile, cancel}) =>
+const base = process.env.REACT_APP_REST_URL
+
+function sendOtp({mobile, cancel})
 {
-    return request.post({url: apiUrlsConstant.sendOtp, data: {mobile}, cancel})
+    return request.post({base, url: apiUrlsConstant.sendOtp, data: {mobile}, cancel})
 }
 
-const loginOrSignup = ({mobile, code, dispatch}) =>
+function loginOrSignup({mobile, code, dispatch})
 {
-    return request.post({url: apiUrlsConstant.sendOtp, data: {mobile, code}})
+    return request.post({base, url: apiUrlsConstant.sendOtp, data: {mobile, code}})
         .then(res =>
         {
+            const {insertInstant, lastUpdateInstant} = res.user
             setUser({user: res, dispatch})
+            return ({isSignUp: insertInstant === lastUpdateInstant})
         })
 }
 
-const getUser = ({dispatch}) =>
+function getUser({dispatch})
 {
-    request.get({url: apiUrlsConstant.getProfile, dontCache: true, dontToast: true})
+    return request.get({base, url: apiUrlsConstant.getProfile, dontCache: true, dontToast: true})
         .then(user =>
         {
             setUser({user, dispatch})
         })
 }
 
-const getTokenWithRefreshToken = () =>
+function getTokenWithRefreshToken()
 {
-    return request.get({url: apiUrlsConstant.refreshToken, dontCache: true, dontToast: true, useRefreshToken: true})
+    return request.get({base, url: apiUrlsConstant.refreshToken, dontCache: true, dontToast: true, useRefreshToken: true})
         .then(res =>
         {
             const {refreshToken, token} = res
-            localStorage.setItem("token", token)
-            localStorage.setItem("refreshToken", refreshToken)
+            cookieHelper.setItem("token", token)
+            cookieHelper.setItem("refreshToken", refreshToken)
             return true
         })
         .catch(() =>
@@ -41,12 +46,12 @@ const getTokenWithRefreshToken = () =>
         })
 }
 
-const checkEmail = ({email, cancel}) =>
+function checkEmail({email, cancel})
 {
-    return request.post({url: apiUrlsConstant.checkEmail, data: {email}, cancel})
+    return request.get({base, url: apiUrlsConstant.checkEmail, param: `?email=${email}`, cancel})
 }
 
-const setUser = ({user, dispatch}) =>
+function setUser({user, dispatch})
 {
     dispatch({
         type: SET_USER,
@@ -54,9 +59,9 @@ const setUser = ({user, dispatch}) =>
     })
 }
 
-const logout = () =>
+function logout()
 {
-    return request.post({url: apiUrlsConstant.logout, useRefreshToken: true})
+    return request.post({base, url: apiUrlsConstant.logout, useRefreshToken: true})
 }
 
 const AuthActions = {

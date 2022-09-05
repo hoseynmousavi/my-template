@@ -70,7 +70,7 @@ self.onnotificationclick = event =>
 }
 
 
-const queue = new Queue("app-boomino")
+const queue = new Queue("my-app")
 
 self.addEventListener("fetch", event =>
 {

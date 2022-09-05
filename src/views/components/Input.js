@@ -1,16 +1,18 @@
-import {useEffect, useRef, useState} from "react"
+import {useEffect, useRef, useState, memo} from "react"
 import regexConstant from "../../constant/regexConstant"
 import checkNationalCode from "../../helpers/checkNationalCode"
-import numberCorrection from "../../helpers/numberCorrection"
+import numberCorrection from "../../seyed-modules/helpers/numberCorrection"
 import inputKeyDownEnter from "../../helpers/inputKeyDownEnter"
 import AuthActions from "../../context/auth/AuthActions"
-import toastConstant from "../../constant/toastConstant"
-import MyLoader from "./MyLoader"
-import CheckSvg from "../../media/svg/CheckSvg"
-import CloseSvg from "../../media/svg/CloseSvg"
+import inputConstant from "../../constant/inputConstant"
+import MyLoader from "../../seyed-modules/components/MyLoader"
+import CheckSvg from "../../seyed-modules/media/svg/CheckSvg"
+import CloseSvg from "../../seyed-modules/media/svg/CloseSvg"
+import {REQUEST_CANCEL} from "../../seyed-modules/constant/toastTypes"
+import onScroll from "../../seyed-modules/helpers/onScroll"
 
 function Input({
-                   className, name, autoComplete = "on", focusOnMountDesktop, label, type = "text", validation, placeholder = "", checkExist = true,
+                   className, name, autoComplete = "on", focusOnMountDesktop, label, type = "text", validation, placeholder = "", onIconClick, disableOnScroll,
                    defaultValue, onChange, disabled, ltr, ltrPlaceHolder, Icon, required, onSubmit, onSubmitDisable, disableSubmit, labelClassName, iconClassName, noSpace,
                })
 {
@@ -24,6 +26,8 @@ function Input({
 
     useEffect(() =>
     {
+        let scrollListener = null
+        if (disableOnScroll) scrollListener = onScroll({callback: () => inputRef.current?.blur?.()})
         if (focusOnMountDesktop && window.innerWidth > 480) setTimeout(() => inputRef?.current?.focus(), 300)
         if (defaultValue)
         {
@@ -44,22 +48,23 @@ function Input({
                     const value = numberCorrection(defaultValue.trim())
                     if (!isNaN(value) && value.length <= 11) setValue(value)
                 }
-                else if (validation === "password")
-                {
-                    const value = defaultValue
-                    if (value.length >= 6) setValue(value)
-                }
             }
             else setValue(defaultValue.trim())
         }
 
         return () =>
         {
+            scrollListener?.()
             clearTimeout(validationTimer.current)
             clearTimeout(validationIconTimer.current)
         }
         // eslint-disable-next-line
     }, [])
+
+    function resetInput()
+    {
+        onInputChange({target: {value: ""}})
+    }
 
     function onInputChange(e)
     {
@@ -76,32 +81,28 @@ function Input({
                 {
                     if (value !== defaultValue)
                     {
-                        if (checkExist)
+                        onChange({name, value: value || required ? null : ""})
+                        if (validationCancel?.current?.cancel) validationCancel.current.cancel(REQUEST_CANCEL)
+                        validationTimer.current = setTimeout(() =>
                         {
-                            onChange({name, value: value || required ? null : ""})
-                            if (validationCancel?.current?.cancel) validationCancel.current.cancel(toastConstant.requestCancel)
-                            validationTimer.current = setTimeout(() =>
-                            {
-                                setValidationLoading("loading")
-                                AuthActions.checkEmail({email: value, cancel: cancelSource => validationCancel.current = cancelSource})
-                                    .then(() =>
+                            setValidationLoading("loading")
+                            AuthActions.checkEmail({email: value, cancel: cancelSource => validationCancel.current = cancelSource})
+                                .then(() =>
+                                {
+                                    setValidationLoading("NOK")
+                                    setError(inputConstant.repeatedEmail)
+                                })
+                                .catch(err =>
+                                {
+                                    if (err?.response?.status === 404)
                                     {
-                                        setValidationLoading("NOK")
-                                        setError(toastConstant.repeatedEmail)
-                                    })
-                                    .catch(err =>
-                                    {
-                                        if (err?.response?.status === 404)
-                                        {
-                                            setValidationLoading("OK")
-                                            validationIconTimer.current = setTimeout(() => setValidationLoading(""), 1000)
-                                            onChange({name, value})
-                                        }
-                                        else setValidationLoading("NOK")
-                                    })
-                            }, 250)
-                        }
-                        else onChange({name, value})
+                                        setValidationLoading("OK")
+                                        validationIconTimer.current = setTimeout(() => setValidationLoading(""), 1000)
+                                        onChange({name, value})
+                                    }
+                                    else setValidationLoading("NOK")
+                                })
+                        }, 250)
                     }
                     else onChange({name, value})
                 }
@@ -135,20 +136,12 @@ function Input({
                 else onChange({name, value: value || required ? null : ""})
                 checkErrTimer()
             }
-            else if (validation === "password")
-            {
-                const value = e.target.value
-                setValue(value)
-                if (value.length >= 6) onChange({name, value})
-                else onChange({name, value: value || required ? null : ""})
-                checkErrTimer()
-            }
         }
         else
         {
             const {value} = e.target
             setValue(value)
-            onChange({name, value: value.trim() ? value.trim() : required ? null : ""})
+            onChange({name, value: value.trim() ? value.trim() : required ? null : "", reset: resetInput})
             checkErrTimer()
         }
         setError("")
@@ -162,11 +155,11 @@ function Input({
 
     function onInputBlur()
     {
-        const tempValue = inputRef.current.value
+        const tempValue = inputRef.current.value.trim()
         let tempErr = ""
         if (!tempValue)
         {
-            if (required) tempErr = toastConstant.requiredField
+            if (required) tempErr = inputConstant.requiredField
         }
         else
         {
@@ -174,23 +167,19 @@ function Input({
             {
                 if (validation === "email")
                 {
-                    if (!regexConstant.EMAIL_REGEX.test(tempValue)) tempErr = toastConstant.unValidEmail
+                    if (!regexConstant.EMAIL_REGEX.test(tempValue)) tempErr = inputConstant.unValidEmail
                 }
                 else if (validation === "national_code")
                 {
-                    if (!checkNationalCode(tempValue)) tempErr = toastConstant.unValidNationalCode
+                    if (!checkNationalCode(tempValue)) tempErr = inputConstant.unValidNationalCode
                 }
                 else if (validation === "phone")
                 {
-                    if (!regexConstant.PHONE_REGEX.test(tempValue)) tempErr = toastConstant.unValidPhone
+                    if (!regexConstant.PHONE_REGEX.test(tempValue)) tempErr = inputConstant.unValidPhone
                 }
                 else if (validation === "url")
                 {
-                    if (!regexConstant.URL_REGEX.test(tempValue)) tempErr = toastConstant.unValidUrl
-                }
-                else if (validation === "password")
-                {
-                    if (tempValue.length < 6) tempErr = toastConstant.unValidPassword
+                    if (!regexConstant.URL_REGEX.test(tempValue)) tempErr = inputConstant.unValidUrl
                 }
             }
         }
@@ -215,7 +204,7 @@ function Input({
                 />
                 {
                     Icon ?
-                        <Icon className={`input-icon icon ${iconClassName} ${ltr ? "" : "rtl"}`}/>
+                        <Icon className={`input-icon icon ${iconClassName} ${ltr ? "" : "rtl"}`} onClick={onIconClick}/>
                         :
                         <>
                             <MyLoader width={24} className={`input-icon validation ${iconClassName} ${validationLoading === "loading" ? "show" : ""} ${ltr ? "" : "rtl"}`}/>
@@ -229,4 +218,4 @@ function Input({
     )
 }
 
-export default Input
+export default memo(Input)

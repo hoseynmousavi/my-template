@@ -1,12 +1,12 @@
-import ToastContainer from "./views/containers/ToastContainer"
-import ThemeColorBar from "./views/components/ThemeColorBar"
+import ToastContainer from "./seyed-modules/components/ToastContainer"
+import ThemeColorBar from "./seyed-modules/components/ThemeColorBar"
 
 function App()
 {
     return (
         <div id="index-temp" className="index-temp">
             <ThemeColorBar/>
-            YES
+            YES ARE WE!
             <ToastContainer/>
         </div>
     )

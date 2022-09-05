@@ -1,0 +1,3 @@
+[submodule "src/seyed-modules"]
+	path = src/seyed-modules
+	url = http://git.boomino.ir:40409/boomino/seyed-modules.git
