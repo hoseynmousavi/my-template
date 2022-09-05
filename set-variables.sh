@@ -8,7 +8,6 @@ sed -i "s~NAME~$REACT_APP_NAME~g" build/manifest.json
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/manifest.json
 sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/manifest.json
 sed -i "s~PRECONNECT~$REACT_APP_REST_URL~g" build/index.html
-sed -i "s~DNS~$REACT_APP_REST_URL~g" build/index.html
 sed -i "s~NAME~$REACT_APP_NAME~g" build/index.html
 sed -i "s~DESCRIPTION~$REACT_APP_DESCRIPTION~g" build/index.html
 sed -i "s~KEYWORDS~$REACT_APP_KEYWORDS~g" build/index.html
@@ -51,7 +50,7 @@ sed -i "s~FIRST_SHADOW~$REACT_APP_FIRST_SHADOW~g" build/index.html
 sed -i "s~SECOND_SHADOW~$REACT_APP_SECOND_SHADOW~g" build/index.html
 sed -i "s~FIRST_RADIUS~$REACT_APP_FIRST_RADIUS~g" build/index.html
 sed -i "s~SECOND_RADIUS~$REACT_APP_SECOND_RADIUS~g" build/index.html
-sed -i "s~MATERIAL_COLOR~$REACT_APP_MATERIAL_COLOR~g" build/index.html
+sed -i "s~FIRST_MATERIAL_COLOR~$REACT_APP_FIRST_MATERIAL_COLOR~g" build/index.html
 sed -i "s~DAMN_FONT~$REACT_APP_DAMN_FONT~g" build/index.html
 sed -i "s~TINY_FONT~$REACT_APP_TINY_FONT~g" build/index.html
 sed -i "s~SMALL_FONT~$REACT_APP_SMALL_FONT~g" build/index.html
