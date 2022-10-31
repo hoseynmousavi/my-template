@@ -36,10 +36,10 @@ const registerSW = () =>
                                     if (navigator.serviceWorker.controller) console.log("on installing, new content is available.")
                                     else console.log("content is cached for offline use.")
                                 }
-                                else console.log("on installing:", installingWorker.state)
+                                else console.log("on installing: ", installingWorker.state)
                             }
                         }
-                        else console.log("installingWorker is null")
+                        else console.log("installingWorker is null.")
                     }
                 })
                 .catch(error => console.error("Error during service worker registration:", error))
