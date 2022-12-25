@@ -15,6 +15,8 @@ const changeColorVariablesConstant = [
     "REACT_APP_TOAST_INFO_DARK_TEXT",
     "REACT_APP_TOAST_FAIL_DARK_BG",
     "REACT_APP_TOAST_FAIL_DARK_TEXT",
+    "REACT_APP_PAGE_DARK_COLOR",
+    "REACT_APP_BOX_DARK_COLOR",
 ]
 
 export default changeColorVariablesConstant

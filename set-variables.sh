@@ -18,6 +18,7 @@ sed -i "s~BTN_INPUT_HEIGHT~$REACT_APP_BTN_INPUT_HEIGHT~g" build/index.html
 sed -i "s~MOBILE_FIRST_SOLID_PADDING~$REACT_APP_MOBILE_FIRST_SOLID_PADDING~g" build/index.html
 sed -i "s~MOBILE_SECOND_SOLID_PADDING~$REACT_APP_MOBILE_SECOND_SOLID_PADDING~g" build/index.html
 sed -i "s~BOTTOM_ENV_PADDING~$REACT_APP_BOTTOM_ENV_PADDING~g" build/index.html
+sed -i "s~BOX_PADDING~$REACT_APP_BOX_PADDING~g" build/index.html
 sed -i "s~FIRST_LINE_HEIGHT~$REACT_APP_FIRST_LINE_HEIGHT~g" build/index.html
 sed -i "s~TOAST_Z_INDEX~$REACT_APP_TOAST_Z_INDEX~g" build/index.html
 sed -i "s~MODAL_Z_INDEX~$REACT_APP_MODAL_Z_INDEX~g" build/index.html
@@ -41,6 +42,8 @@ sed -i "s~FIRST_ICON_COLOR~$REACT_APP_FIRST_ICON_COLOR~g" build/index.html
 sed -i "s~SECOND_ICON_COLOR~$REACT_APP_SECOND_ICON_COLOR~g" build/index.html
 sed -i "s~FIRST_BACKGROUND_COLOR~$REACT_APP_FIRST_BACKGROUND_COLOR~g" build/index.html
 sed -i "s~SECOND_BACKGROUND_COLOR~$REACT_APP_SECOND_BACKGROUND_COLOR~g" build/index.html
+sed -i "s~PAGE_COLOR~$REACT_APP_PAGE_COLOR~g" build/index.html
+sed -i "s~BOX_COLOR~$REACT_APP_BOX_COLOR~g" build/index.html
 sed -i "s~FIRST_MODAL_BACKGROUND_COLOR~$REACT_APP_FIRST_MODAL_BACKGROUND_COLOR~g" build/index.html
 sed -i "s~SECOND_MODAL_BACKGROUND_COLOR~$REACT_APP_SECOND_MODAL_BACKGROUND_COLOR~g" build/index.html
 sed -i "s~SOLID_LIGHT~$REACT_APP_SOLID_LIGHT~g" build/index.html
