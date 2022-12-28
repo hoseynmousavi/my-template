@@ -1,4 +1,4 @@
-FROM node:lts AS base
+FROM node:latest AS base
 
 WORKDIR /app
 
@@ -14,8 +14,10 @@ RUN npm run dockerbuild
 
 RUN bash +x set-variables.sh
 
-FROM bitnami/nginx:latest
+FROM nginx:latest
+
+EXPOSE 4000
 
 COPY --from=base /app/build /app/build
 
-COPY ./nginx/my_server_block.conf /opt/bitnami/nginx/conf/server_blocks/my_server_block.conf
+COPY ./nginx/my_server_block.conf /etc/nginx/conf.d/default.conf
